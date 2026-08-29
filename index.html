@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="theme-color" content="#0a0a0c">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="KOReader">
+    <link rel="manifest" href='data:application/manifest+json,{"name":"KOReader%20遥控","short_name":"KOReader","display":"standalone","background_color":"%230a0a0c","theme_color":"%230a0a0c","start_url":"."}'>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%230a0a0c'/><text x='50' y='72' font-size='52' text-anchor='middle'>📖</text></svg>">
+    <title>KOReader 遥控器</title>
+    <style>
+        :root {
+            --bg-gradient: radial-gradient(ellipse at 30% 20%, #1e1e2f, #0a0a0c);
+            --bg-card: rgba(255, 255, 255, 0.04);
+            --border-card: rgba(255, 255, 255, 0.06);
+            --panel-bg: rgba(0, 0, 0, 0.3);
+            --panel-border: rgba(255, 255, 255, 0.06);
+            --input-border: rgba(255, 255, 255, 0.15);
+            --input-text: #fff;
+            --outline-bg: rgba(255, 255, 255, 0.04);
+            --outline-text: #fff;
+            --text-primary: #f1f5f9;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            --shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+            --btn-primary-bg: linear-gradient(145deg, #2563eb, #1d4ed8);
+            --btn-primary-border: #3b82f6;
+            --btn-success-bg: linear-gradient(145deg, #059669, #047857);
+            --btn-success-border: #10b981;
+            --btn-danger-bg: linear-gradient(145deg, #dc2626, #b91c1c);
+            --btn-danger-border: #ef4444;
+            --btn-warning-bg: linear-gradient(145deg, #d97706, #b45309);
+            --btn-warning-border: #f59e0b;
+            --btn-indigo-bg: linear-gradient(145deg, #6366f1, #4f46e5);
+            --btn-indigo-border: #818cf8;
+            --radius: 20px;
+            --radius-sm: 12px;
+            --transition: 0.2s ease;
+        }
+        body.light {
+            --bg-gradient: radial-gradient(ellipse at 30% 20%, #e9eefb, #f4f5f7);
+            --bg-card: rgba(255, 255, 255, 0.9);
+            --border-card: rgba(0, 0, 0, 0.08);
+            --panel-bg: rgba(0, 0, 0, 0.04);
+            --panel-border: rgba(0, 0, 0, 0.08);
+            --input-border: rgba(0, 0, 0, 0.2);
+            --input-text: #0f172a;
+            --outline-bg: rgba(255, 255, 255, 0.7);
+            --outline-text: #0f172a;
+            --text-primary: #0f172a;
+            --text-secondary: #475569;
+            --text-muted: #94a3b8;
+            --shadow: 0 8px 32px rgba(15, 23, 42, 0.15);
+            --btn-primary-bg: linear-gradient(145deg, #dbeafe, #bfdbfe);
+            --btn-primary-border: #93c5fd;
+            --btn-primary-text: #1e40af;
+            --btn-success-bg: linear-gradient(145deg, #d1fae5, #a7f3d0);
+            --btn-success-border: #6ee7b7;
+            --btn-success-text: #065f46;
+            --btn-danger-bg: linear-gradient(145deg, #fee2e2, #fecaca);
+            --btn-danger-border: #fca5a5;
+            --btn-danger-text: #b91c1c;
+            --btn-warning-bg: linear-gradient(145deg, #fef3c7, #fde68a);
+            --btn-warning-border: #fcd34d;
+            --btn-warning-text: #92400e;
+            --btn-indigo-bg: linear-gradient(145deg, #e0e7ff, #c7d2fe);
+            --btn-indigo-border: #a5b4fc;
+            --btn-indigo-text: #4338ca;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            background: var(--bg-gradient);
+            min-height: 100vh;
+            display: flex; justify-content: center; align-items: center;
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+            padding: 20px 20px calc(20px + env(safe-area-inset-bottom)); color: var(--text-primary);
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+        .container {
+            max-width: 420px; width: 100%;
+            background: var(--bg-card); backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--border-card); border-radius: var(--radius);
+            padding: 28px 22px 36px; box-shadow: var(--shadow);
+            display: flex; flex-direction: column; gap: 28px;
+        }
+        .header { text-align: center; position: relative; padding-right: 48px; }
+        .theme-toggle {
+            position: absolute; right: 0; top: 50%; transform: translateY(-50%);
+            background: var(--panel-bg); border: 1px solid var(--panel-border);
+            border-radius: 50%; width: 40px; height: 40px;
+            font-size: 20px; line-height: 1; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            transition: all var(--transition);
+        }
+        .theme-toggle:active { transform: translateY(-50%) scale(0.9); }
+        .header h1 {
+            font-size: 28px; font-weight: 700;
+            background: linear-gradient(135deg, #60a5fa, #34d399);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            background-clip: text; letter-spacing: 1px; margin-bottom: 6px;
+        }
+        .header .sub { font-size: 14px; color: var(--text-secondary); font-weight: 400; letter-spacing: 0.3px; }
+        .settings {
+            display: flex; gap: 8px; align-items: center;
+            background: var(--panel-bg); padding: 10px 14px;
+            border-radius: var(--radius-sm); border: 1px solid var(--panel-border);
+            flex-wrap: wrap;
+        }
+        .settings label { font-size: 13px; color: var(--text-secondary); white-space: nowrap; font-weight: 500; }
+        .settings input {
+            flex: 1; min-width: 60px; background: transparent; border: none;
+            border-bottom: 1.5px solid var(--input-border);
+            padding: 6px 4px; color: var(--input-text); font-size: 14px; font-weight: 500;
+            outline: none; transition: border-color var(--transition);
+        }
+        .settings input:focus { border-bottom-color: #60a5fa; }
+        .settings input::placeholder { color: var(--text-muted); font-weight: 400; }
+        .settings .port-input { max-width: 70px; flex: 0.5; }
+        .settings .save-btn {
+            background: rgba(96,165,250,0.15); border: none; color: #60a5fa;
+            padding: 6px 14px; border-radius: 30px; font-size: 13px; font-weight: 600;
+            cursor: pointer; transition: all var(--transition); white-space: nowrap;
+            border: 1px solid transparent;
+        }
+        .settings .save-btn:hover { background: rgba(96,165,250,0.25); }
+        .settings .save-btn:active { transform: scale(0.94); }
+        .status-bar {
+            display: flex; align-items: center; justify-content: center; gap: 10px;
+            background: var(--panel-bg); padding: 10px 18px; border-radius: var(--radius-sm);
+            font-size: 14px; color: var(--text-secondary); transition: all 0.3s ease;
+            border: 1px solid var(--panel-border); line-height: 1.45;
+            text-align: center;
+        }
+        .status-bar .dot { flex-shrink: 0; }
+        .status-bar .dot {
+            width: 8px; height: 8px; border-radius: 50%; background: #34d399;
+            display: inline-block; transition: background 0.3s;
+        }
+        .status-bar .dot.inactive { background: #64748b; }
+        .status-bar .dot.sending {
+            background: #facc15;
+            animation: pulse 0.8s infinite alternate;
+        }
+        @keyframes pulse {
+            0% { opacity: 0.4; transform: scale(0.9); }
+            100% { opacity: 1; transform: scale(1.2); }
+        }
+        .status-text { transition: color 0.3s; }
+
+        .btn-group { display: flex; flex-direction: column; gap: 16px; }
+        .btn-row { display: flex; gap: 14px; }
+        .btn-row .btn { flex: 1; }
+        .btn {
+            display: flex; align-items: center; justify-content: center; gap: 10px;
+            padding: 16px 12px; border: none; border-radius: var(--radius-sm);
+            font-size: 18px; font-weight: 600; color: #fff; cursor: pointer;
+            transition: all 0.15s ease;
+            background: rgba(255,255,255,0.05); backdrop-filter: blur(4px);
+            border: 1px solid rgba(255,255,255,0.06);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            min-height: 70px; position: relative; overflow: hidden; text-align: center;
+        }
+        .btn svg { width: 26px; height: 26px; fill: currentColor; flex-shrink: 0; }
+        .btn:active { transform: scale(0.94); filter: brightness(0.9); }
+        .btn-primary { background: var(--btn-primary-bg); border-color: var(--btn-primary-border); }
+        .btn-success { background: var(--btn-success-bg); border-color: var(--btn-success-border); }
+        .btn-danger { background: var(--btn-danger-bg); border-color: var(--btn-danger-border); }
+        .btn-warning { background: var(--btn-warning-bg); border-color: var(--btn-warning-border); }
+        .btn-indigo { background: var(--btn-indigo-bg); border-color: var(--btn-indigo-border); }
+        body.light .btn-primary { color: var(--btn-primary-text); }
+        body.light .btn-success { color: var(--btn-success-text); }
+        body.light .btn-danger { color: var(--btn-danger-text); }
+        body.light .btn-warning { color: var(--btn-warning-text); }
+        body.light .btn-indigo { color: var(--btn-indigo-text); }
+        body.light .btn { box-shadow: 0 3px 10px rgba(15, 23, 42, 0.08); }
+        .btn-outline { background: var(--outline-bg); border-color: var(--panel-border); color: var(--outline-text); }
+        .btn-sleep { min-height: 60px; font-size: 18px; }
+        .btn-page { min-height: 92px; font-size: 21px; letter-spacing: 2px; }
+        .btn-page svg { width: 32px; height: 32px; }
+        .btn-sm { min-height: 58px; font-size: 14px; padding: 10px 6px; gap: 6px; }
+        .btn-sm svg { width: 20px; height: 20px; }
+        .btn-flash { animation: flash 0.3s ease; }
+        @keyframes flash {
+            0% { box-shadow: 0 0 0 0 rgba(255,255,255,0.4); }
+            50% { box-shadow: 0 0 24px 8px rgba(255,255,255,0.2); }
+            100% { box-shadow: 0 0 0 0 transparent; }
+        }
+        .section-label { font-size: 15px; font-weight: 500; color: var(--text-secondary); text-align: center; letter-spacing: 0.5px; margin-top: 4px; }
+        .light-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+        @media (max-width: 400px) {
+            .container { padding: 20px 16px; }
+            .btn { font-size: 16px; min-height: 60px; }
+            .btn-sm { min-height: 52px; font-size: 13px; }
+            .settings { flex-wrap: wrap; }
+            .settings .port-input { max-width: 60px; }
+        }
+        @media (min-width: 600px) { .container { padding: 36px 30px; } }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <button class="theme-toggle" id="themeToggle" title="切换日间/夜间">☀️</button>
+        <h1>📖 KOReader 遥控</h1>
+        <div class="sub"> Wi‑Fi 无线控制</div>
+    </div>
+
+    <!-- 连接设置 -->
+    <div class="settings">
+        <label>🔗</label>
+        <input type="text" class="ip-input" id="ipInput" placeholder="设备 IP" value="192.168.0.100">
+        <span style="color: var(--text-muted);">:</span>
+        <input type="text" class="port-input" id="portInput" placeholder="端口（可选）" value="8080">
+        <button class="save-btn" id="saveSettings">连接</button>
+    </div>
+
+    <!-- 状态栏 -->
+    <div class="status-bar">
+        <span class="dot" id="statusDot"></span>
+        <span class="status-text" id="statusText">就绪</span>
+    </div>
+
+    <!-- 核心按钮 -->
+    <div class="btn-group">
+        <div class="btn-row">
+            <button class="btn btn-primary btn-page" data-event="GotoViewRel/-1">
+                <svg viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>上一页
+            </button>
+            <button class="btn btn-primary btn-page" data-event="GotoViewRel/1">
+                <svg viewBox="0 0 24 24"><path d="M8.59 16.59L10 18l6-6-6-6-1.41 1.41L13.17 12z"/></svg>下一页
+            </button>
+        </div>
+        <div class="btn-row">
+            <button class="btn btn-success" data-event="ShowToc">
+                <svg viewBox="0 0 24 24"><path d="M3 5h18v2H3V5zm0 6h18v2H3v-2zm0 6h12v2H3v-2z"/></svg>目录
+            </button>
+            <button class="btn btn-indigo" id="screenshotBtn">
+                <svg viewBox="0 0 24 24">
+                    <path d="M9 2l-1.83 2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2h-3.17L15 2H9zm3 15c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5z"/>
+                </svg>屏幕截图
+            </button>
+        </div>
+        <div class="btn-row">
+            <button class="btn btn-danger btn-sleep" data-event="RequestSuspend">
+                <svg viewBox="0 0 24 24"><path d="M12 3a9 9 0 1 0 9 9c0-.46-.04-.92-.1-1.36a5.389 5.389 0 0 1-4.4 2.26 5.403 5.403 0 0 1-3.14-9.8c-.44-.06-.9-.1-1.36-.1z"/></svg>休眠
+            </button>
+            <button class="btn btn-outline btn-sleep" data-event="ToggleNightMode">
+                <svg viewBox="0 0 24 24"><path d="M9 2l-1.83 2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2h-3.17L15 2H9zm-4 6a7.5 7.5 0 0 1 7 7.75 7.5 7.5 0 0 1-7 7.25c-.7 0-1.4-.1-2-.28V8.28c.6-.18 1.3-.28 2-.28z"/></svg>夜间模式
+            </button>
+        </div>
+    </div>
+
+    <!-- 前光 -->
+    <div>
+        <div class="section-label">💡 前光亮度</div>
+        <div class="light-grid" style="grid-template-columns: repeat(2, 1fr);">
+            <button class="btn btn-warning btn-sm" data-event="IncreaseFlIntensity/1"><svg viewBox="0 0 24 24"><path d="M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zm0-5v2m0 18v2m9-11h2M3 12H1m15.36 6.36l1.42 1.42M4.22 4.22l1.42 1.42m13.44 0l1.42-1.42M4.22 19.78l1.42-1.42M13 12h-2"/></svg>+1</button>
+            <button class="btn btn-outline btn-sm" data-event="DecreaseFlIntensity/1"><svg viewBox="0 0 24 24"><path d="M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zm0-5v2m0 18v2m9-11h2M3 12H1m15.36 6.36l1.42 1.42M4.22 4.22l1.42 1.42m13.44 0l1.42-1.42M4.22 19.78l1.42-1.42M9 12h6"/></svg>−1</button>
+        </div>
+        <div class="section-label" style="margin-top: 14px;">🌡️ 前光色温</div>
+        <div class="light-grid" style="grid-template-columns: repeat(2, 1fr);">
+            <button class="btn btn-warning btn-sm" data-event="IncreaseFlWarmth/1"><svg viewBox="0 0 24 24"><path d="M12 2a7 7 0 0 0-4 12.7V17a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2v-2.3A7 7 0 0 0 12 2zm-2 17h4v1a2 2 0 0 1-4 0v-1z"/></svg>+1</button>
+            <button class="btn btn-outline btn-sm" data-event="DecreaseFlWarmth/1"><svg viewBox="0 0 24 24"><path d="M12 2a7 7 0 0 0-4 12.7V17a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2v-2.3A7 7 0 0 0 12 2zm-2 17h4v1a2 2 0 0 1-4 0v-1zM5 5l2 2m12-2l-2 2M2 12h3m17 0h-3"/></svg>−1</button>
+        </div>
+    </div>
+</div>
+
+    <script>
+    (function() {
+        // ---- 日间/夜间主题 ----
+        const themeToggle = document.getElementById('themeToggle');
+        const themeColorMeta = document.querySelector('meta[name="theme-color"]');
+        function applyTheme(light) {
+            document.body.classList.toggle('light', light);
+            themeToggle.textContent = light ? '🌙' : '☀️';
+            themeToggle.title = light ? '切换到夜间模式' : '切换到日间模式';
+            if (themeColorMeta) themeColorMeta.content = light ? '#f4f5f7' : '#0a0a0c';
+            localStorage.setItem('koreader_remote_theme', light ? 'light' : 'dark');
+        }
+        themeToggle.addEventListener('click', () => {
+            applyTheme(!document.body.classList.contains('light'));
+        });
+        applyTheme(localStorage.getItem('koreader_remote_theme') === 'light');
+
+        const ipInput = document.getElementById('ipInput');
+        const portInput = document.getElementById('portInput');
+        const saveBtn = document.getElementById('saveSettings');
+        const statusDot = document.getElementById('statusDot');
+        const statusText = document.getElementById('statusText');
+        const actionBtns = document.querySelectorAll('[data-event]');
+
+        // ---- 配置读写 ----
+        function loadConfig() {
+            try {
+                const saved = localStorage.getItem('koreader_remote_config');
+                if (saved) {
+                    const config = JSON.parse(saved);
+                    if (config.ip) ipInput.value = config.ip;
+                    if (config.port !== undefined) portInput.value = config.port;
+                }
+            } catch (_) {}
+        }
+        function saveConfig() {
+            const ip = ipInput.value.trim() || '';
+            const port = portInput.value.trim();
+            localStorage.setItem('koreader_remote_config', JSON.stringify({ ip, port }));
+        }
+
+        // ---- 连接测试 ----
+        // 服务器不带 CORS 头，用 no-cors 探测：能收到响应（无论状态码）即视为可达
+        function connect() {
+            const base = getBaseUrl();
+            if (!ipInput.value.trim()) {
+                updateStatus('请先输入设备 IP', '#ef4444', 'inactive');
+                return;
+            }
+            saveConfig();
+            updateStatus(`连接中 ${base} …`, '#facc15', 'sending');
+            const started = performance.now();
+            const controller = new AbortController();
+            const timer = setTimeout(() => controller.abort(), 5000);
+            fetch(base + '/', { mode: 'no-cors', cache: 'no-store', signal: controller.signal })
+                .then(() => {
+                    clearTimeout(timer);
+                    updateStatus(`连接成功 ✓ ${base.replace('http://', '')}`, '#34d399', '');
+                })
+                .catch((err) => {
+                    clearTimeout(timer);
+                    const elapsed = performance.now() - started;
+                    let msg;
+                    if (err.name === 'AbortError') {
+                        msg = '连接超时：设备无响应，请确认手机与设备在同一 Wi-Fi，IP 是否正确';
+                    } else if (elapsed < 1500) {
+                        msg = '连接被拒绝：端口未开放，请检查 KOReader 的 HTTP 服务是否已启动、端口是否正确';
+                    } else {
+                        msg = `连接失败：${err.message || '网络错误'}`;
+                    }
+                    updateStatus(msg, '#ef4444', 'inactive');
+                });
+        }
+
+        // ---- 获取基础 URL ----
+        function getBaseUrl() {
+            let ip = ipInput.value.trim() || '';
+            let port = portInput.value.trim();
+            ip = ip.replace(/^https?:\/\//, '');
+            if (port) {
+                return `http://${ip}:${port}`;
+            } else {
+                return `http://${ip}`;
+            }
+        }
+
+        // ---- 状态更新 ----
+        function updateStatus(text, color = '#94a3b8', dotState = 'inactive') {
+            statusText.textContent = text;
+            statusText.style.color = color;
+            statusDot.className = 'dot';
+            if (dotState) statusDot.classList.add(dotState);
+        }
+
+        // ---- 发送遥控指令 ----
+        const eventNames = {
+            'GotoViewRel/-1': '上一页', 'GotoViewRel/1': '下一页',
+            'ShowToc': '目录', 'RequestSuspend': '休眠', 'ToggleNightMode': '夜间模式',
+            'IncreaseFlIntensity': '亮度+', 'DecreaseFlIntensity': '亮度−',
+            'IncreaseFlWarmth': '色温+', 'DecreaseFlWarmth': '色温−'
+        };
+        function eventLabel(eventPath) {
+            const key = Object.keys(eventNames).reverse().find(k => eventPath === k || eventPath.startsWith(k + '/'));
+            return eventNames[key] || eventPath;
+        }
+        function sendCommand(eventPath) {
+            const base = getBaseUrl();
+            const url = `${base}/koreader/event/${eventPath}`;
+            updateStatus('发送中…', '#facc15', 'sending');
+            fetch(url, { mode: 'no-cors', cache: 'no-store' }).catch(() => {});
+            setTimeout(() => {
+                updateStatus(`指令已发送 ✓ ${eventLabel(eventPath)}`, '#34d399', '');
+                setTimeout(() => updateStatus('就绪', '#94a3b8', 'inactive'), 1200);
+            }, 200);
+        }
+
+        // ---- 屏幕截图（保存到本地） ----
+        // /koreader/device/screen/bb 直接返回当前屏幕 PNG，不往设备截图目录写文件
+        const screenshotBtn = document.getElementById('screenshotBtn');
+        function screenshotTimestamp() {
+            const d = new Date();
+            const p = n => String(n).padStart(2, '0');
+            return `${d.getFullYear()}${p(d.getMonth() + 1)}${p(d.getDate())}_${p(d.getHours())}${p(d.getMinutes())}${p(d.getSeconds())}`;
+        }
+        screenshotBtn.addEventListener('click', function() {
+            this.classList.add('btn-flash');
+            setTimeout(() => this.classList.remove('btn-flash'), 300);
+            const url = `${getBaseUrl()}/koreader/device/screen/bb`;
+            updateStatus('正在获取屏幕截图…', '#facc15', 'sending');
+            fetch(url, { cache: 'no-store' }).then(res => {
+                if (!res.ok) throw new Error('HTTP ' + res.status);
+                return res.blob();
+            }).then(blob => {
+                const a = document.createElement('a');
+                const blobUrl = URL.createObjectURL(blob);
+                a.href = blobUrl;
+                a.download = `koreader_${screenshotTimestamp()}.png`;
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+                setTimeout(() => URL.revokeObjectURL(blobUrl), 5000);
+                updateStatus('截图已保存到本地 ✓', '#34d399', '');
+                setTimeout(() => updateStatus('就绪', '#94a3b8', 'inactive'), 1500);
+            }).catch(() => {
+                // 本地 file:// 打开时受跨域限制，无法读取图片数据：
+                // 改为新标签页打开图片，右键/长按即可保存到本地
+                updateStatus('已打开截图，请手动保存到本地', '#60a5fa', 'sending');
+                window.open(url, '_blank');
+                setTimeout(() => updateStatus('就绪', '#94a3b8', 'inactive'), 3000);
+            });
+        });
+
+        // ---- 蓝牙翻页器 / 键盘翻页 ----
+        // 大多数蓝牙翻页器（PPT 翻页笔）以 HID 键盘形式发送 PageUp/PageDown 或方向键
+        document.addEventListener('keydown', (e) => {
+            if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+            let event = null;
+            switch (e.key) {
+                case 'PageUp':
+                case 'ArrowLeft':
+                case 'ArrowUp':
+                    event = 'GotoViewRel/-1'; break;
+                case 'PageDown':
+                case 'ArrowRight':
+                case 'ArrowDown':
+                    event = 'GotoViewRel/1'; break;
+            }
+            if (event) {
+                e.preventDefault();
+                sendCommand(event);
+            }
+        });
+
+        // ---- 绑定屏幕按钮 ----
+        actionBtns.forEach(btn => {
+            btn.addEventListener('click', function() {
+                const event = this.dataset.event;
+                if (!event) return;
+                this.classList.add('btn-flash');
+                setTimeout(() => this.classList.remove('btn-flash'), 300);
+                sendCommand(event);
+            });
+        });
+
+        // ---- 亮度/色温按钮长按连发 ----
+        const holdBtns = document.querySelectorAll('[data-event^="IncreaseFl"], [data-event^="DecreaseFl"]');
+        holdBtns.forEach(btn => {
+            let holdTimer = null, repeatTimer = null, held = false;
+            function stop() {
+                clearTimeout(holdTimer); clearInterval(repeatTimer);
+                holdTimer = null; repeatTimer = null; held = false;
+            }
+            btn.addEventListener('pointerdown', () => {
+                held = true;
+                holdTimer = setTimeout(() => {
+                    if (!held) return;
+                    repeatTimer = setInterval(() => sendCommand(btn.dataset.event), 200);
+                }, 500);
+            });
+            ['pointerup', 'pointerleave', 'pointercancel'].forEach(ev =>
+                btn.addEventListener(ev, stop));
+            btn.addEventListener('contextmenu', e => e.preventDefault());
+        });
+
+        saveBtn.addEventListener('click', connect);
+        [ipInput, portInput].forEach(inp => {
+            inp.addEventListener('keydown', (e) => { if (e.key === 'Enter') connect(); });
+        });
+
+        loadConfig();
+        updateStatus('就绪', '#94a3b8', 'inactive');
+    })();
+</script>
+</body>
+</html>
