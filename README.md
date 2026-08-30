@@ -3,6 +3,7 @@
 一个纯前端（HTML/CSS/JS）的 KOReader 无线遥控页面，手机/电脑浏览器打开即可控制同一 Wi‑Fi 下的 KOReader 阅读器。无需安装、无需后端。
 
 > 在线版：`https://db6e2b1b140b45d894a0061efd69c39a.app.workbuddy.link`
+> githubpage：`https://seaneasysaid.github.io/koreader-remote/`
 > 也可自行部署到 GitHub Pages（见下文），获得长期稳定的专属链接。
 
 ---
