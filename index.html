@@ -8,130 +8,152 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="KOReader">
-    <link rel="manifest" href='data:application/manifest+json,{"name":"KOReader%20遥控","short_name":"KOReader","display":"standalone","background_color":"%230a0a0c","theme_color":"%230a0a0c","start_url":"."}'>
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%230a0a0c'/><text x='50' y='72' font-size='52' text-anchor='middle'>📖</text></svg>">
+    <link rel="manifest" href='data:application/manifest+json,{"name":"KOReader%20遥控","short_name":"KOReader","display":"standalone","background_color":"%230a0a0c","theme_color":"%230a0a0c","start_url":".","icons":[{"src":"icon-192.png","sizes":"192x192","type":"image/png","purpose":"any"},{"src":"icon-512.png","sizes":"512x512","type":"image/png","purpose":"any"}]}'>
+    <link rel="icon" href="icon-192.png" sizes="192x192" type="image/png">
+    <link rel="apple-touch-icon" href="icon-192.png">
     <title>KOReader 遥控器</title>
     <style>
         :root {
-            --bg-gradient: radial-gradient(ellipse at 30% 20%, #1e1e2f, #0a0a0c);
-            --bg-card: rgba(255, 255, 255, 0.04);
-            --border-card: rgba(255, 255, 255, 0.06);
-            --panel-bg: rgba(0, 0, 0, 0.3);
-            --panel-border: rgba(255, 255, 255, 0.06);
-            --input-border: rgba(255, 255, 255, 0.15);
-            --input-text: #fff;
-            --outline-bg: rgba(255, 255, 255, 0.04);
-            --outline-text: #fff;
-            --text-primary: #f1f5f9;
-            --text-secondary: #94a3b8;
-            --text-muted: #64748b;
-            --shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
-            --btn-primary-bg: linear-gradient(145deg, #2563eb, #1d4ed8);
-            --btn-primary-border: #3b82f6;
-            --btn-success-bg: linear-gradient(145deg, #059669, #047857);
-            --btn-success-border: #10b981;
-            --btn-danger-bg: linear-gradient(145deg, #dc2626, #b91c1c);
-            --btn-danger-border: #ef4444;
-            --btn-warning-bg: linear-gradient(145deg, #d97706, #b45309);
-            --btn-warning-border: #f59e0b;
-            --btn-indigo-bg: linear-gradient(145deg, #6366f1, #4f46e5);
-            --btn-indigo-border: #818cf8;
+            /* 夜间主题 */
+            --bg-gradient: radial-gradient(120% 120% at 20% 10%, #2a2a3d 0%, #14141d 55%, #0b0b10 100%);
+            --bg-card: rgba(30, 30, 44, 0.72);
+            --border-card: rgba(255, 255, 255, 0.10);
+            --panel-bg: rgba(12, 12, 20, 0.40);
+            --panel-border: rgba(255, 255, 255, 0.10);
+            --input-border: rgba(255, 255, 255, 0.22);
+            --input-text: #f4f6fb;
+            --outline-bg: rgba(255, 255, 255, 0.05);
+            --outline-border: rgba(255, 255, 255, 0.14);
+            --outline-text: #e7eaf2;
+            --text-primary: #eef1f8;
+            --text-secondary: #a7b0c2;
+            --text-muted: #6f7890;
+            --shadow: 0 10px 36px rgba(0, 0, 0, 0.55);
+            /* 翻页 · 主色（沉稳低饱和的蓝灰，柔和不刺眼） */
+            --btn-primary-bg: linear-gradient(150deg, #5b7296 0%, #3c4f74 100%);
+            --btn-primary-border: #7e93b6;
+            /* 目录 · 绿 */
+            --btn-success-bg: linear-gradient(150deg, #2ed08c 0%, #13a06c 100%);
+            --btn-success-border: #57e0a8;
+            /* 休眠 · 红 */
+            --btn-danger-bg: linear-gradient(150deg, #ff6f6f 0%, #e03a3a 100%);
+            --btn-danger-border: #ff9393;
+            /* 亮度 · 琥珀 */
+            --btn-warning-bg: linear-gradient(150deg, #ffb347 0%, #ee8a1f 100%);
+            --btn-warning-border: #ffcf80;
+            /* 截图/色温 · 紫靛 */
+            --btn-indigo-bg: linear-gradient(150deg, #8b7cff 0%, #5e4ae6 100%);
+            --btn-indigo-border: #ab9eff;
             --radius: 20px;
             --radius-sm: 12px;
             --transition: 0.2s ease;
         }
         body.light {
-            --bg-gradient: radial-gradient(ellipse at 30% 20%, #e9eefb, #f4f5f7);
-            --bg-card: rgba(255, 255, 255, 0.9);
-            --border-card: rgba(0, 0, 0, 0.08);
-            --panel-bg: rgba(0, 0, 0, 0.04);
-            --panel-border: rgba(0, 0, 0, 0.08);
-            --input-border: rgba(0, 0, 0, 0.2);
-            --input-text: #0f172a;
-            --outline-bg: rgba(255, 255, 255, 0.7);
-            --outline-text: #0f172a;
-            --text-primary: #0f172a;
-            --text-secondary: #475569;
-            --text-muted: #94a3b8;
-            --shadow: 0 8px 32px rgba(15, 23, 42, 0.15);
-            --btn-primary-bg: linear-gradient(145deg, #dbeafe, #bfdbfe);
-            --btn-primary-border: #93c5fd;
-            --btn-primary-text: #1e40af;
-            --btn-success-bg: linear-gradient(145deg, #d1fae5, #a7f3d0);
-            --btn-success-border: #6ee7b7;
-            --btn-success-text: #065f46;
-            --btn-danger-bg: linear-gradient(145deg, #fee2e2, #fecaca);
-            --btn-danger-border: #fca5a5;
-            --btn-danger-text: #b91c1c;
-            --btn-warning-bg: linear-gradient(145deg, #fef3c7, #fde68a);
-            --btn-warning-border: #fcd34d;
-            --btn-warning-text: #92400e;
-            --btn-indigo-bg: linear-gradient(145deg, #e0e7ff, #c7d2fe);
-            --btn-indigo-border: #a5b4fc;
-            --btn-indigo-text: #4338ca;
+            /* 日间主题 */
+            --bg-gradient: radial-gradient(120% 120% at 20% 0%, #eef2fb 0%, #f6f8fd 55%, #eef4f8 100%);
+            --bg-card: rgba(255, 255, 255, 0.86);
+            --border-card: rgba(31, 45, 90, 0.10);
+            --panel-bg: rgba(255, 255, 255, 0.65);
+            --panel-border: rgba(31, 45, 90, 0.12);
+            --input-border: rgba(31, 45, 90, 0.28);
+            --input-text: #16233d;
+            --outline-bg: rgba(255, 255, 255, 0.75);
+            --outline-border: rgba(31, 45, 90, 0.14);
+            --outline-text: #33425e;
+            --text-primary: #17233a;
+            --text-secondary: #5a6782;
+            --text-muted: #9aa6bd;
+            --shadow: 0 12px 32px rgba(30, 45, 90, 0.14);
+            /* 翻页 · 沉稳蓝灰（日间收敛，不作刺眼主视觉） */
+            --btn-primary-bg: linear-gradient(150deg, #5f76a0 0%, #43587f 100%);
+            --btn-primary-border: #8298bd;
+            --btn-primary-text: #ffffff;
+            /* 目录 · 绿 */
+            --btn-success-bg: linear-gradient(150deg, #d9f7ea 0%, #b3eed3 100%);
+            --btn-success-border: #74d6ab;
+            --btn-success-text: #0b6a46;
+            /* 休眠 · 红 */
+            --btn-danger-bg: linear-gradient(150deg, #ffe2e2 0%, #ffc7c7 100%);
+            --btn-danger-border: #f69090;
+            --btn-danger-text: #b23535;
+            /* 亮度 · 琥珀 */
+            --btn-warning-bg: linear-gradient(150deg, #ffefce 0%, #ffe3a1 100%);
+            --btn-warning-border: #f2b84e;
+            --btn-warning-text: #8a5a06;
+            /* 截图/色温 · 紫靛 */
+            --btn-indigo-bg: linear-gradient(150deg, #e7e2ff 0%, #cdc4ff 100%);
+            --btn-indigo-border: #a99cff;
+            --btn-indigo-text: #4a35c9;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
             background: var(--bg-gradient);
             min-height: 100vh;
-            display: flex; justify-content: center; align-items: center;
+            display: flex; justify-content: center; align-items: stretch;
             font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
             padding: 20px 20px calc(20px + env(safe-area-inset-bottom)); color: var(--text-primary);
             transition: background 0.3s ease, color 0.3s ease;
         }
         .container {
             max-width: 420px; width: 100%;
+            min-height: calc(100vh - 40px);
             background: var(--bg-card); backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
             border: 1px solid var(--border-card); border-radius: var(--radius);
-            padding: 28px 22px 36px; box-shadow: var(--shadow);
-            display: flex; flex-direction: column; gap: 28px;
+            padding: 16px 18px 28px; box-shadow: var(--shadow);
+            display: flex; flex-direction: column; gap: 12px;
         }
-        .header { text-align: center; position: relative; padding-right: 48px; }
+        .header {
+            display: grid;
+            grid-template-columns: 34px 1fr 34px;
+            align-items: center; gap: 6px;
+        }
+        .header-title { text-align: center; min-width: 0; }
+        .header-title h1 { white-space: nowrap; }
         .theme-toggle {
-            position: absolute; right: 0; top: 50%; transform: translateY(-50%);
             background: var(--panel-bg); border: 1px solid var(--panel-border);
-            border-radius: 50%; width: 40px; height: 40px;
-            font-size: 20px; line-height: 1; cursor: pointer;
+            border-radius: 50%; width: 34px; height: 34px;
+            font-size: 16px; line-height: 1; cursor: pointer;
             display: flex; align-items: center; justify-content: center;
-            transition: all var(--transition);
+            transition: all var(--transition); justify-self: end;
         }
-        .theme-toggle:active { transform: translateY(-50%) scale(0.9); }
+        .theme-toggle:active { transform: scale(0.9); }
         .header h1 {
             font-size: 28px; font-weight: 700;
-            background: linear-gradient(135deg, #60a5fa, #34d399);
+            background: linear-gradient(135deg, #5a9bff, #4de0b0);
             -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            background-clip: text; letter-spacing: 1px; margin-bottom: 6px;
+            background-clip: text; letter-spacing: 0.5px; margin-bottom: 1px;
+            display: flex; align-items: center; justify-content: center; gap: 5px;
         }
-        .header .sub { font-size: 14px; color: var(--text-secondary); font-weight: 400; letter-spacing: 0.3px; }
+        .header .sub { font-size: 10px; color: var(--text-secondary); font-weight: 400; letter-spacing: 0.3px; white-space: nowrap; }
         .settings {
-            display: flex; gap: 8px; align-items: center;
-            background: var(--panel-bg); padding: 10px 14px;
+            display: flex; gap: 6px; align-items: center;
+            background: var(--panel-bg); padding: 8px 12px;
             border-radius: var(--radius-sm); border: 1px solid var(--panel-border);
             flex-wrap: wrap;
         }
-        .settings label { font-size: 13px; color: var(--text-secondary); white-space: nowrap; font-weight: 500; }
+        .settings label { font-size: 12px; color: var(--text-secondary); white-space: nowrap; font-weight: 500; }
         .settings input {
             flex: 1; min-width: 60px; background: transparent; border: none;
             border-bottom: 1.5px solid var(--input-border);
-            padding: 6px 4px; color: var(--input-text); font-size: 14px; font-weight: 500;
+            padding: 4px 3px; color: var(--input-text); font-size: 13px; font-weight: 500;
             outline: none; transition: border-color var(--transition);
         }
-        .settings input:focus { border-bottom-color: #60a5fa; }
+        .settings input:focus { border-bottom-color: #3d8bff; }
         .settings input::placeholder { color: var(--text-muted); font-weight: 400; }
-        .settings .port-input { max-width: 70px; flex: 0.5; }
+        .settings .port-input { max-width: 60px; flex: 0.5; }
         .settings .save-btn {
-            background: rgba(96,165,250,0.15); border: none; color: #60a5fa;
-            padding: 6px 14px; border-radius: 30px; font-size: 13px; font-weight: 600;
+            background: rgba(61,139,255,0.15); border: none; color: #3d8bff;
+            padding: 5px 12px; border-radius: 30px; font-size: 12px; font-weight: 600;
             cursor: pointer; transition: all var(--transition); white-space: nowrap;
             border: 1px solid transparent;
         }
-        .settings .save-btn:hover { background: rgba(96,165,250,0.25); }
+        .settings .save-btn:hover { background: rgba(61,139,255,0.25); }
         .settings .save-btn:active { transform: scale(0.94); }
         .status-bar {
             display: flex; align-items: center; justify-content: center; gap: 10px;
-            background: var(--panel-bg); padding: 10px 18px; border-radius: var(--radius-sm);
-            font-size: 14px; color: var(--text-secondary); transition: all 0.3s ease;
+            background: var(--panel-bg); padding: 7px 16px; border-radius: var(--radius-sm);
+            font-size: 12px; color: var(--text-secondary); transition: all 0.3s ease;
             border: 1px solid var(--panel-border); line-height: 1.45;
             text-align: center;
         }
@@ -161,26 +183,67 @@
             transition: all 0.15s ease;
             background: rgba(255,255,255,0.05); backdrop-filter: blur(4px);
             border: 1px solid rgba(255,255,255,0.06);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            box-shadow: 0 4px 14px rgba(0,0,0,0.25);
             min-height: 70px; position: relative; overflow: hidden; text-align: center;
         }
         .btn svg { width: 26px; height: 26px; fill: currentColor; flex-shrink: 0; }
-        .btn:active { transform: scale(0.94); filter: brightness(0.9); }
-        .btn-primary { background: var(--btn-primary-bg); border-color: var(--btn-primary-border); }
-        .btn-success { background: var(--btn-success-bg); border-color: var(--btn-success-border); }
-        .btn-danger { background: var(--btn-danger-bg); border-color: var(--btn-danger-border); }
-        .btn-warning { background: var(--btn-warning-bg); border-color: var(--btn-warning-border); }
-        .btn-indigo { background: var(--btn-indigo-bg); border-color: var(--btn-indigo-border); }
-        body.light .btn-primary { color: var(--btn-primary-text); }
+        .btn:active { transform: scale(0.94); filter: brightness(0.92); }
+        /* 主按钮（翻页）：与 8 个菜单同系的高级低饱和雾灰蓝玻璃态，比菜单略实以作主操作 */
+        .btn-primary {
+            background: linear-gradient(180deg, rgba(154,169,196,0.30), rgba(154,169,196,0.16));
+            border-color: rgba(176,191,218,0.48);
+            color: #f0f3fa; box-shadow: 0 6px 18px rgba(0,0,0,0.22);
+        }
+        body.light .btn-primary {
+            background: linear-gradient(180deg, #eef1f8, #e2e7f1);
+            border-color: rgba(88,106,133,0.34);
+            color: #2e3a4e; box-shadow: 0 6px 18px rgba(30,45,90,0.10);
+        }
+        .btn-success { background: var(--btn-success-bg); border-color: var(--btn-success-border); color: #fff; }
+        .btn-danger { background: var(--btn-danger-bg); border-color: var(--btn-danger-border); color: #fff; }
+        .btn-warning { background: var(--btn-warning-bg); border-color: var(--btn-warning-border); color: #fff; }
+        .btn-indigo { background: var(--btn-indigo-bg); border-color: var(--btn-indigo-border); color: #fff; }
         body.light .btn-success { color: var(--btn-success-text); }
         body.light .btn-danger { color: var(--btn-danger-text); }
         body.light .btn-warning { color: var(--btn-warning-text); }
         body.light .btn-indigo { color: var(--btn-indigo-text); }
-        body.light .btn { box-shadow: 0 3px 10px rgba(15, 23, 42, 0.08); }
-        .btn-outline { background: var(--outline-bg); border-color: var(--panel-border); color: var(--outline-text); }
+        body.light .btn { box-shadow: 0 3px 10px rgba(30, 45, 90, 0.08); }
+        .btn-outline { background: var(--outline-bg); border-color: var(--outline-border); color: var(--outline-text); }
+        /* 面板内的"增加"按钮：与菜单/翻页同系雾灰蓝，柔和不刺眼 */
+        .btn-up {
+            background: linear-gradient(180deg, rgba(154,169,196,0.26), rgba(154,169,196,0.14));
+            border-color: rgba(176,191,218,0.44); color: #eef1f8;
+        }
+        body.light .btn-up {
+            background: linear-gradient(180deg, #eef1f8, #e2e7f1);
+            border-color: rgba(88,106,133,0.30); color: #2e3a4e;
+        }
+        /* 8 个功能菜单：与翻页同系的高级雾灰蓝玻璃态，低饱和不刺眼 */
+        .btn-soft {
+            background: linear-gradient(180deg, rgba(154,169,196,0.12), rgba(154,169,196,0.05));
+            border-color: rgba(154,169,196,0.26);
+            color: #ccd4e0;
+        }
+        body.light .btn-soft {
+            background: linear-gradient(180deg, #f6f8fc, #eef1f7);
+            border-color: rgba(88,106,133,0.18);
+            color: #46536a;
+        }
+        .btn[data-toggle-light].open.btn-soft { outline-color: #5b7296; }
         .btn-sleep { min-height: 60px; font-size: 18px; }
-        .btn-page { min-height: 92px; font-size: 21px; letter-spacing: 2px; }
-        .btn-page svg { width: 32px; height: 32px; }
+        /* 翻页大按钮：撑满所有剩余空间 */
+        .btn-page { min-height: 0; font-size: 34px; letter-spacing: 2px; flex-direction: column; gap: 20px; }
+        .btn-page svg { width: 82px; height: 82px; }
+        /* 功能小按钮：图标在上、文字在下，统一正方形高度 */
+        .btn-mini { min-height: 72px; padding: 8px 4px; gap: 7px; flex-direction: column; font-size: 13.5px; font-weight: 600; }
+        .btn-mini svg { width: 24px; height: 24px; }
+        .btn-mini .mini-ic { font-size: 24px; line-height: 1; display: inline-block; }
+        /* 功能区 4×2 网格 + 下方翻页两列 */
+        .func-grid-wrap { display: flex; flex-direction: column; gap: 14px; flex: 1; min-height: 0; }
+        .func-grid { position: relative; display: grid; grid-template-columns: repeat(4, 1fr); grid-auto-rows: 1fr; gap: 10px; }
+        .func-grid .btn { min-height: 0; height: 100%; }
+        .page-row { display: flex; gap: 14px; flex: 1; min-height: 0; }
+        .page-row .btn { flex: 1; }
         .btn-sm { min-height: 58px; font-size: 14px; padding: 10px 6px; gap: 6px; }
         .btn-sm svg { width: 20px; height: 20px; }
         .btn-flash { animation: flash 0.3s ease; }
@@ -190,13 +253,38 @@
             100% { box-shadow: 0 0 0 0 transparent; }
         }
         .section-label { font-size: 15px; font-weight: 500; color: var(--text-secondary); text-align: center; letter-spacing: 0.5px; margin-top: 4px; }
-        .light-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+
+        /* 二级菜单（前光亮度/色温） */
+        .light-toggle-row { display: flex; gap: 14px; }
+        .light-toggle {
+            flex: 1; min-height: 64px; display: flex; align-items: center; justify-content: center;
+            gap: 8px; font-size: 17px; font-weight: 600; color: #fff; cursor: pointer;
+            border-radius: var(--radius-sm); border: 1px solid rgba(255,255,255,0.06);
+            transition: all 0.15s ease;
+        }
+        .light-toggle:active { transform: scale(0.97); }
+        body.light .light-toggle.btn-warning { color: var(--btn-warning-text); }
+        body.light .light-toggle.btn-indigo { color: var(--btn-indigo-text); }
+        .light-toggle .chev { margin-left: auto; font-size: 12px; color: var(--text-muted); transition: transform 0.2s ease; }
+        .light-toggle.open .chev { transform: rotate(180deg); }
+        .btn[data-toggle-light].open { outline: 2px solid rgba(61,139,255,0.8); outline-offset: -2px; }
+        .btn[data-toggle-light].open svg, .btn[data-toggle-light].open span:not(.chev) { filter: brightness(1.25); }
+        .light-panel { display: none; position: absolute; left: 0; right: 0; top: calc(100% + 6px); z-index: 20; grid-template-columns: 1fr 1fr; gap: 10px; padding: 10px 12px; border: 1px solid var(--panel-border); border-radius: var(--radius-sm); background: var(--panel-bg); box-shadow: var(--shadow); backdrop-filter: blur(8px); }
+        body.light .light-panel { background: rgba(255, 255, 255, 0.97); border-color: rgba(31,45,90,0.14); }
+        .light-panel.open { display: grid; }
+        .light-panel .btn-panel { min-height: 46px; font-size: 13px; }
+        .btn-group { gap: 20px; }
         @media (max-width: 400px) {
-            .container { padding: 20px 16px; }
+            .container { padding: 16px 14px 24px; }
             .btn { font-size: 16px; min-height: 60px; }
+            .btn-page, .btn-mini { min-height: 0; }
             .btn-sm { min-height: 52px; font-size: 13px; }
             .settings { flex-wrap: wrap; }
             .settings .port-input { max-width: 60px; }
+            /* 窄屏：标题略收、防溢出换行 */
+            .header { grid-template-columns: 30px 1fr 30px; gap: 4px; }
+            .header h1 { font-size: 24px; gap: 4px; letter-spacing: 0.2px; }
+            .theme-toggle { width: 30px; height: 30px; font-size: 15px; }
         }
         @media (min-width: 600px) { .container { padding: 36px 30px; } }
     </style>
@@ -205,9 +293,12 @@
 
 <div class="container">
     <div class="header">
+        <div class="header-spacer"></div>
+        <div class="header-title">
+            <h1>KOReader 遥控</h1>
+            <div class="sub">Wi‑Fi 无线控制</div>
+        </div>
         <button class="theme-toggle" id="themeToggle" title="切换日间/夜间">☀️</button>
-        <h1>📖 KOReader 遥控</h1>
-        <div class="sub"> Wi‑Fi 无线控制</div>
     </div>
 
     <!-- 连接设置 -->
@@ -225,47 +316,49 @@
         <span class="status-text" id="statusText">就绪</span>
     </div>
 
-    <!-- 核心按钮 -->
-    <div class="btn-group">
-        <div class="btn-row">
+    <!-- 功能按钮：上方两排 4×2 = 8 个小方块 + 前光二级 + 翻页大按钮 -->
+    <div class="btn-group func-grid-wrap">
+        <div class="func-grid">
+            <button class="btn btn-mini btn-soft" data-event="ShowToc">
+                <svg viewBox="0 0 24 24"><path d="M3 5h18v2H3V5zm0 6h18v2H3v-2zm0 6h12v2H3v-2z"/></svg>目录
+            </button>
+            <button class="btn btn-mini btn-soft" id="screenshotBtn">
+                <svg viewBox="0 0 24 24"><path d="M9 2l-1.83 2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2h-3.17L15 2H9zm3 15c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5z"/></svg>截图
+            </button>
+            <button class="btn btn-mini btn-soft" data-event="FullRefresh">
+                <svg viewBox="0 0 24 24"><path d="M17.65 6.35A7.95 7.95 0 0 0 12 4a8 8 0 1 0 7.73 10h-2.08A6 6 0 1 1 15 6.92L12 9.85V4h5.35l.3.35zM17.65 6.35L20.9 3.1"/></svg>全刷
+            </button>
+            <button class="btn btn-mini btn-soft" data-event="RequestSuspend">
+                <svg viewBox="0 0 24 24"><path d="M12 3a9 9 0 1 0 9 9c0-.46-.04-.92-.1-1.36a5.389 5.389 0 0 1-4.4 2.26 5.403 5.403 0 0 1-3.14-9.8c-.44-.06-.9-.1-1.36-.1z"/></svg>休眠
+            </button>
+            <button class="btn btn-mini btn-soft" data-event="ToggleNightMode">
+                <svg viewBox="0 0 24 24"><path d="M9 2l-1.83 2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2h-3.17L15 2H9zm-4 6a7.5 7.5 0 0 1 7 7.75 7.5 7.5 0 0 1-7 7.25c-.7 0-1.4-.1-2-.28V8.28c.6-.18 1.3-.28 2-.28z"/></svg>夜间
+            </button>
+            <button class="btn btn-mini btn-soft" data-toggle-light="brightnessPanel"><span class="mini-ic">💡</span><span>亮度</span></button>
+            <button class="btn btn-mini btn-soft" data-toggle-light="warmthPanel"><span class="mini-ic">🌡️</span><span>色温</span></button>
+            <button class="btn btn-mini btn-soft" data-event="IterateRotation">
+                <svg viewBox="0 0 24 24"><path d="M16.48 2.52a10 10 0 0 1 0 14.07l-1.41-1.41a8 8 0 0 0 0-11.26l1.41-1.4M7.52 21.48a10 10 0 0 1 0-14.07l1.41 1.41a8 8 0 0 0 0 11.26l-1.41 1.4M6.34 6.34l1.41 1.41A8 8 0 0 0 7.75 18.75l-1.41 1.41A10 10 0 0 1 6.34 6.34M17.66 17.66l-1.41-1.41A8 8 0 0 0 16.25 5.25l1.41-1.41A10 10 0 0 1 17.66 17.66"/></svg>旋转
+            </button>
+
+            <!-- 二级面板：弹出覆盖在下方（脱离网格流、盖住翻页顶部），不挤压布局 -->
+            <div class="light-panel" id="brightnessPanel">
+                <button class="btn btn-up btn-panel" data-event="IncreaseFlIntensity/1">+1</button>
+                <button class="btn btn-outline btn-panel" data-event="DecreaseFlIntensity/1">−1</button>
+            </div>
+            <div class="light-panel" id="warmthPanel">
+                <button class="btn btn-up btn-panel" data-event="IncreaseFlWarmth/1">+1</button>
+                <button class="btn btn-outline btn-panel" data-event="DecreaseFlWarmth/1">−1</button>
+            </div>
+        </div>
+
+        <!-- 翻页大按钮：占满下方全部空间 -->
+        <div class="page-row">
             <button class="btn btn-primary btn-page" data-event="GotoViewRel/-1">
                 <svg viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>上一页
             </button>
             <button class="btn btn-primary btn-page" data-event="GotoViewRel/1">
                 <svg viewBox="0 0 24 24"><path d="M8.59 16.59L10 18l6-6-6-6-1.41 1.41L13.17 12z"/></svg>下一页
             </button>
-        </div>
-        <div class="btn-row">
-            <button class="btn btn-success" data-event="ShowToc">
-                <svg viewBox="0 0 24 24"><path d="M3 5h18v2H3V5zm0 6h18v2H3v-2zm0 6h12v2H3v-2z"/></svg>目录
-            </button>
-            <button class="btn btn-indigo" id="screenshotBtn">
-                <svg viewBox="0 0 24 24">
-                    <path d="M9 2l-1.83 2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2h-3.17L15 2H9zm3 15c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5z"/>
-                </svg>屏幕截图
-            </button>
-        </div>
-        <div class="btn-row">
-            <button class="btn btn-danger btn-sleep" data-event="RequestSuspend">
-                <svg viewBox="0 0 24 24"><path d="M12 3a9 9 0 1 0 9 9c0-.46-.04-.92-.1-1.36a5.389 5.389 0 0 1-4.4 2.26 5.403 5.403 0 0 1-3.14-9.8c-.44-.06-.9-.1-1.36-.1z"/></svg>休眠
-            </button>
-            <button class="btn btn-outline btn-sleep" data-event="ToggleNightMode">
-                <svg viewBox="0 0 24 24"><path d="M9 2l-1.83 2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2h-3.17L15 2H9zm-4 6a7.5 7.5 0 0 1 7 7.75 7.5 7.5 0 0 1-7 7.25c-.7 0-1.4-.1-2-.28V8.28c.6-.18 1.3-.28 2-.28z"/></svg>夜间模式
-            </button>
-        </div>
-    </div>
-
-    <!-- 前光 -->
-    <div>
-        <div class="section-label">💡 前光亮度</div>
-        <div class="light-grid" style="grid-template-columns: repeat(2, 1fr);">
-            <button class="btn btn-warning btn-sm" data-event="IncreaseFlIntensity/1"><svg viewBox="0 0 24 24"><path d="M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zm0-5v2m0 18v2m9-11h2M3 12H1m15.36 6.36l1.42 1.42M4.22 4.22l1.42 1.42m13.44 0l1.42-1.42M4.22 19.78l1.42-1.42M13 12h-2"/></svg>+1</button>
-            <button class="btn btn-outline btn-sm" data-event="DecreaseFlIntensity/1"><svg viewBox="0 0 24 24"><path d="M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zm0-5v2m0 18v2m9-11h2M3 12H1m15.36 6.36l1.42 1.42M4.22 4.22l1.42 1.42m13.44 0l1.42-1.42M4.22 19.78l1.42-1.42M9 12h6"/></svg>−1</button>
-        </div>
-        <div class="section-label" style="margin-top: 14px;">🌡️ 前光色温</div>
-        <div class="light-grid" style="grid-template-columns: repeat(2, 1fr);">
-            <button class="btn btn-warning btn-sm" data-event="IncreaseFlWarmth/1"><svg viewBox="0 0 24 24"><path d="M12 2a7 7 0 0 0-4 12.7V17a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2v-2.3A7 7 0 0 0 12 2zm-2 17h4v1a2 2 0 0 1-4 0v-1z"/></svg>+1</button>
-            <button class="btn btn-outline btn-sm" data-event="DecreaseFlWarmth/1"><svg viewBox="0 0 24 24"><path d="M12 2a7 7 0 0 0-4 12.7V17a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2v-2.3A7 7 0 0 0 12 2zm-2 17h4v1a2 2 0 0 1-4 0v-1zM5 5l2 2m12-2l-2 2M2 12h3m17 0h-3"/></svg>−1</button>
         </div>
     </div>
 </div>
@@ -279,13 +372,29 @@
             document.body.classList.toggle('light', light);
             themeToggle.textContent = light ? '🌙' : '☀️';
             themeToggle.title = light ? '切换到夜间模式' : '切换到日间模式';
-            if (themeColorMeta) themeColorMeta.content = light ? '#f4f5f7' : '#0a0a0c';
+            if (themeColorMeta) themeColorMeta.content = light ? '#f2f5fb' : '#14141d';
             localStorage.setItem('koreader_remote_theme', light ? 'light' : 'dark');
         }
         themeToggle.addEventListener('click', () => {
             applyTheme(!document.body.classList.contains('light'));
         });
         applyTheme(localStorage.getItem('koreader_remote_theme') === 'light');
+
+        // ---- 前光二级菜单（亮度/色温互斥展开） ----
+        document.querySelectorAll('[data-toggle-light]').forEach(toggleBtn => {
+            toggleBtn.addEventListener('click', function() {
+                const target = document.getElementById(this.dataset.toggleLight);
+                const wasOpen = this.classList.contains('open');
+                // 收起所有
+                document.querySelectorAll('[data-toggle-light]').forEach(b => b.classList.remove('open'));
+                document.querySelectorAll('.light-panel').forEach(p => p.classList.remove('open'));
+                // 若原本收起则展开当前
+                if (!wasOpen) {
+                    this.classList.add('open');
+                    if (target) target.classList.add('open');
+                }
+            });
+        });
 
         const ipInput = document.getElementById('ipInput');
         const portInput = document.getElementById('portInput');
@@ -368,6 +477,7 @@
         const eventNames = {
             'GotoViewRel/-1': '上一页', 'GotoViewRel/1': '下一页',
             'ShowToc': '目录', 'RequestSuspend': '休眠', 'ToggleNightMode': '夜间模式',
+            'FullRefresh': '全刷', 'IterateRotation': '旋转',
             'IncreaseFlIntensity': '亮度+', 'DecreaseFlIntensity': '亮度−',
             'IncreaseFlWarmth': '色温+', 'DecreaseFlWarmth': '色温−'
         };
