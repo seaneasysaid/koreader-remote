@@ -2,6 +2,21 @@
 
 一个纯前端（HTML/CSS/JS）的 KOReader 无线遥控页面。手机/电脑浏览器打开即可控制同一 Wi‑Fi 下的 KOReader 阅读器，无需安装、无需后端。
 
+![koreader](https://img.shields.io/badge/koreader-7BA7D9?style=flat-square)
+![kindle](https://img.shields.io/badge/kindle-7BA7D9?style=flat-square)
+![kobo](https://img.shields.io/badge/kobo-7BA7D9?style=flat-square)
+![e-reader](https://img.shields.io/badge/e--reader-7BA7D9?style=flat-square)
+![html5](https://img.shields.io/badge/html5-7BA7D9?style=flat-square&logo=html5&logoColor=white)
+![css3](https://img.shields.io/badge/css3-7BA7D9?style=flat-square&logo=css3&logoColor=white)
+![javascript](https://img.shields.io/badge/javascript-7BA7D9?style=flat-square&logo=javascript&logoColor=white)
+![pwa](https://img.shields.io/badge/pwa-7BA7D9?style=flat-square&logo=pwa&logoColor=white)
+![wifi](https://img.shields.io/badge/wifi-7BA7D9?style=flat-square&logo=wifi&logoColor=white)
+![mobile-first](https://img.shields.io/badge/mobile--first-7BA7D9?style=flat-square)
+![no-backend](https://img.shields.io/badge/no%20backend-7BA7D9?style=flat-square)
+![self-hosted](https://img.shields.io/badge/self--hosted-7BA7D9?style=flat-square)
+![github-pages](https://img.shields.io/badge/github%20pages-7BA7D9?style=flat-square&logo=githubpages&logoColor=white)
+![open source](https://img.shields.io/badge/open%20source-7BA7D9?style=flat-square)
+
 ## 在线访问
 
 | 通道 | 链接 | 说明 |
