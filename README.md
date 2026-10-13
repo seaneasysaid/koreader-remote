@@ -1,5 +1,7 @@
 # KOReader 遥控器
 
+[![Downloads](https://img.shields.io/github/downloads/seaneasysaid/koreader-remote/total?style=flat-square&label=Downloads&color=3d8bff&logo=github)](https://github.com/seaneasysaid/koreader-remote/releases)
+
 用手机遥控你的 KOReader 阅读器。
 
 一个**纯前端**（HTML/CSS/JS）的无线遥控页面，直接调用 KOReader 自带的 HTTP 接口，
