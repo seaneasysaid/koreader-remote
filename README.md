@@ -1,4 +1,4 @@
-# KOReader 遥控器
+﻿# KOReader 遥控器
 
 一个纯前端（HTML/CSS/JS）的 KOReader 无线遥控页面。手机/电脑浏览器打开即可控制同一 Wi‑Fi 下的 KOReader 阅读器，无需安装、无需后端。
 
@@ -90,3 +90,15 @@ git push origin main
 - 仅支持 KOReader 自带的 HTTP 控制接口，需要设备端开启服务器。
 - 遥控指令与目标设备在同一局域网内直连，不经过任何第三方服务器。
 - 默认 IP/端口可在 `index.html` 第 216、218 行的 `value` 中修改后重新部署。
+
+---
+
+## 安卓 App（APK）
+
+除了在浏览器里打开网页，你也可以把遥控页面打包成安卓 App 安装使用：
+
+- 🔊 **音量键翻页**：音量上键 = 上一页，音量下键 = 下一页（App 内可一键切换「翻页 / 调音量」模式，设置自动记住）
+- 📸 **截图存手机**：点截图按钮，KOReader 当前屏幕 PNG 直接写入系统「下载」目录
+- 📦 **离线内嵌**：页面打包进 APK，打开即用，无需联网加载 UI
+
+👉 下载与构建说明见子目录 **[koreader-apk](koreader-apk/)**；最新安装包在 **[Releases](https://github.com/seaneasysaid/koreader-remote/releases)** 页面下载 koreader-remote-v1.0.0.apk。
