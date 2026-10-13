@@ -1,5 +1,7 @@
 # KOReader Remote — 安卓 App
 
+[![Downloads](https://img.shields.io/github/downloads/seaneasysaid/koreader-remote/total?style=flat-square&label=Downloads&color=3d8bff&logo=github)](https://github.com/seaneasysaid/koreader-remote/releases)
+
 把 [KOReader 遥控页面](../) 打包成安卓 App：一个轻量 **WebView 壳** + **离线内嵌的遥控页面**。
 
 > 想直接用网页版？看[仓库主页](../)。
