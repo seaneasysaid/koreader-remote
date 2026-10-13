@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="theme-color" content="#0a0a0c">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="KOReader">
+    <link rel="manifest" href='data:application/manifest+json,{"name":"KOReader%20遥控","short_name":"KOReader","display":"standalone","background_color":"%230a0a0c","theme_color":"%230a0a0c","start_url":".","icons":[{"src":"icon-192.png","sizes":"192x192","type":"image/png","purpose":"any"},{"src":"icon-512.png","sizes":"512x512","type":"image/png","purpose":"any"}]}'>
+    <link rel="icon" href="icon-192.png" sizes="192x192" type="image/png">
+    <link rel="apple-touch-icon" href="icon-192.png">
+    <title>KOReader 遥控器</title>
+    <style>
+        :root {
+            /* 夜间主题 */
+            --bg-gradient: radial-gradient(120% 120% at 20% 10%, #2a2a3d 0%, #14141d 55%, #0b0b10 100%);
+            --bg-card: rgba(30, 30, 44, 0.72);
+            --border-card: rgba(255, 255, 255, 0.10);
+            --panel-bg: rgba(12, 12, 20, 0.40);
+            --panel-border: rgba(255, 255, 255, 0.10);
+            --input-border: rgba(255, 255, 255, 0.22);
+            --input-text: #f4f6fb;
+            --outline-bg: rgba(255, 255, 255, 0.05);
+            --outline-border: rgba(255, 255, 255, 0.14);
+            --outline-text: #e7eaf2;
+            --text-primary: #eef1f8;
+            --text-secondary: #a7b0c2;
+            --text-muted: #6f7890;
+            --shadow: 0 10px 36px rgba(0, 0, 0, 0.55);
+            /* 翻页 · 主色（沉稳低饱和的蓝灰，柔和不刺眼） */
+            --btn-primary-bg: linear-gradient(150deg, #5b7296 0%, #3c4f74 100%);
+            --btn-primary-border: #7e93b6;
+            /* 目录 · 绿 */
+            --btn-success-bg: linear-gradient(150deg, #2ed08c 0%, #13a06c 100%);
+            --btn-success-border: #57e0a8;
+            /* 休眠 · 红 */
+            --btn-danger-bg: linear-gradient(150deg, #ff6f6f 0%, #e03a3a 100%);
+            --btn-danger-border: #ff9393;
+            /* 亮度 · 琥珀 */
+            --btn-warning-bg: linear-gradient(150deg, #ffb347 0%, #ee8a1f 100%);
+            --btn-warning-border: #ffcf80;
+            /* 截图/色温 · 紫靛 */
+            --btn-indigo-bg: linear-gradient(150deg, #8b7cff 0%, #5e4ae6 100%);
+            --btn-indigo-border: #ab9eff;
+            --radius: 20px;
+            --radius-sm: 12px;
+            --transition: 0.2s ease;
+        }
+        body.light {
+            /* 日间主题 */
+            --bg-gradient: radial-gradient(120% 120% at 20% 0%, #eef2fb 0%, #f6f8fd 55%, #eef4f8 100%);
+            --bg-card: rgba(255, 255, 255, 0.86);
+            --border-card: rgba(31, 45, 90, 0.10);
+            --panel-bg: rgba(255, 255, 255, 0.65);
+            --panel-border: rgba(31, 45, 90, 0.12);
+            --input-border: rgba(31, 45, 90, 0.28);
+            --input-text: #16233d;
+            --outline-bg: rgba(255, 255, 255, 0.75);
+            --outline-border: rgba(31, 45, 90, 0.14);
+            --outline-text: #33425e;
+            --text-primary: #17233a;
+            --text-secondary: #5a6782;
+            --text-muted: #9aa6bd;
+            --shadow: 0 12px 32px rgba(30, 45, 90, 0.14);
+            /* 翻页 · 沉稳蓝灰（日间收敛，不作刺眼主视觉） */
+            --btn-primary-bg: linear-gradient(150deg, #5f76a0 0%, #43587f 100%);
+            --btn-primary-border: #8298bd;
+            --btn-primary-text: #ffffff;
+            /* 目录 · 绿 */
+            --btn-success-bg: linear-gradient(150deg, #d9f7ea 0%, #b3eed3 100%);
+            --btn-success-border: #74d6ab;
+            --btn-success-text: #0b6a46;
+            /* 休眠 · 红 */
+            --btn-danger-bg: linear-gradient(150deg, #ffe2e2 0%, #ffc7c7 100%);
+            --btn-danger-border: #f69090;
+            --btn-danger-text: #b23535;
+            /* 亮度 · 琥珀 */
+            --btn-warning-bg: linear-gradient(150deg, #ffefce 0%, #ffe3a1 100%);
+            --btn-warning-border: #f2b84e;
+            --btn-warning-text: #8a5a06;
+            /* 截图/色温 · 紫靛 */
+            --btn-indigo-bg: linear-gradient(150deg, #e7e2ff 0%, #cdc4ff 100%);
+            --btn-indigo-border: #a99cff;
+            --btn-indigo-text: #4a35c9;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            background: var(--bg-gradient);
+            min-height: 100vh;
+            display: flex; justify-content: center; align-items: stretch;
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+            padding: 20px 20px calc(20px + env(safe-area-inset-bottom)); color: var(--text-primary);
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+        .container {
+            max-width: 420px; width: 100%;
+            min-height: calc(100vh - 40px);
+            background: var(--bg-card); backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--border-card); border-radius: var(--radius);
+            padding: 16px 18px 28px; box-shadow: var(--shadow);
+            display: flex; flex-direction: column; gap: 12px;
+        }
+        .header {
+            display: grid;
+            grid-template-columns: 34px 1fr 34px;
+            align-items: center; gap: 6px;
+        }
+        .header-title { text-align: center; min-width: 0; }
+        .header-title h1 { white-space: nowrap; }
+        .theme-toggle {
+            background: var(--panel-bg); border: 1px solid var(--panel-border);
+            border-radius: 50%; width: 34px; height: 34px;
+            font-size: 16px; line-height: 1; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            transition: all var(--transition); justify-self: end;
+        }
+        .theme-toggle:active { transform: scale(0.9); }
+
+        /* 键盘 / 蓝牙翻页笔按键映射说明 */
+        .keys-toggle {
+            background: var(--panel-bg); border: 1px solid var(--panel-border);
+            border-radius: 50%; width: 34px; height: 34px;
+            font-size: 15px; line-height: 1; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            transition: all var(--transition); justify-self: start;
+        }
+        .keys-toggle:active { transform: scale(0.9); }
+        .keys-overlay {
+            position: fixed; inset: 0; z-index: 60; display: none;
+            background: rgba(0, 0, 0, 0.55);
+            -webkit-backdrop-filter: blur(3px); backdrop-filter: blur(3px);
+            padding: 18px; align-items: center; justify-content: center;
+        }
+        .keys-overlay.open { display: flex; }
+        .keys-card {
+            width: 100%; max-width: 400px; max-height: 82vh;
+            display: flex; flex-direction: column; overflow: hidden;
+            background: var(--bg-card); border: 1px solid var(--border-card);
+            border-radius: var(--radius); box-shadow: var(--shadow);
+        }
+        body.light .keys-card { background: rgba(255, 255, 255, 0.97); }
+        .keys-head {
+            display: flex; align-items: center; gap: 8px; padding: 12px 14px;
+            border-bottom: 1px solid var(--panel-border);
+            font-size: 14px; font-weight: 600; color: var(--text-primary);
+        }
+        .keys-close {
+            margin-left: auto; background: transparent; border: none;
+            color: var(--text-secondary); font-size: 16px; cursor: pointer;
+            width: 28px; height: 28px; border-radius: 50%; line-height: 1;
+        }
+        .keys-close:active { transform: scale(0.9); }
+        .keys-body { padding: 8px 14px 16px; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+        .keys-group h3 { font-size: 12px; font-weight: 600; color: var(--text-secondary); letter-spacing: 0.4px; margin: 12px 0 4px; }
+        .keys-line { display: flex; align-items: baseline; gap: 10px; padding: 3px 0; font-size: 12.5px; }
+        .keys-line .keys-codes { flex: 1; min-width: 0; line-height: 1.95; color: var(--text-muted); }
+        .keys-line .keys-act { flex-shrink: 0; color: var(--text-primary); font-weight: 600; }
+        kbd {
+            display: inline-block; padding: 1px 6px; margin: 0 2px 2px 0; font-size: 11px;
+            font-family: ui-monospace, Menlo, Consolas, monospace;
+            color: var(--outline-text); background: var(--outline-bg);
+            border: 1px solid var(--outline-border); border-radius: 5px;
+        }
+        .keys-note { margin-top: 14px; font-size: 11.5px; color: var(--text-muted); line-height: 1.7; }
+        .header h1 {
+            font-size: 28px; font-weight: 700;
+            background: linear-gradient(135deg, #5a9bff, #4de0b0);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            background-clip: text; letter-spacing: 0.5px; margin-bottom: 1px;
+            display: flex; align-items: center; justify-content: center; gap: 5px;
+        }
+        .header .sub { font-size: 10px; color: var(--text-secondary); font-weight: 400; letter-spacing: 0.3px; white-space: nowrap; }
+        .settings {
+            display: flex; gap: 6px; align-items: center;
+            background: var(--panel-bg); padding: 8px 12px;
+            border-radius: var(--radius-sm); border: 1px solid var(--panel-border);
+            flex-wrap: wrap;
+        }
+        .settings label { font-size: 12px; color: var(--text-secondary); white-space: nowrap; font-weight: 500; }
+        .settings input {
+            flex: 1; min-width: 60px; background: transparent; border: none;
+            border-bottom: 1.5px solid var(--input-border);
+            padding: 4px 3px; color: var(--input-text); font-size: 13px; font-weight: 500;
+            outline: none; transition: border-color var(--transition);
+        }
+        .settings input:focus { border-bottom-color: #3d8bff; }
+        .settings input::placeholder { color: var(--text-muted); font-weight: 400; }
+        .settings .port-input { max-width: 60px; flex: 0.5; }
+        .settings .save-btn {
+            background: rgba(61,139,255,0.15); border: none; color: #3d8bff;
+            padding: 5px 12px; border-radius: 30px; font-size: 12px; font-weight: 600;
+            cursor: pointer; transition: all var(--transition); white-space: nowrap;
+            border: 1px solid transparent;
+        }
+        .settings .save-btn:hover { background: rgba(61,139,255,0.25); }
+        .settings .save-btn:active { transform: scale(0.94); }
+        .status-bar {
+            display: flex; align-items: center; justify-content: center; gap: 10px;
+            background: var(--panel-bg); padding: 7px 16px; border-radius: var(--radius-sm);
+            font-size: 12px; color: var(--text-secondary); transition: all 0.3s ease;
+            border: 1px solid var(--panel-border); line-height: 1.45;
+            text-align: center;
+        }
+        .status-bar .dot { flex-shrink: 0; }
+        .status-bar .dot {
+            width: 8px; height: 8px; border-radius: 50%; background: #34d399;
+            display: inline-block; transition: background 0.3s;
+        }
+        .status-bar .dot.inactive { background: #64748b; }
+        .status-bar .dot.sending {
+            background: #facc15;
+            animation: pulse 0.8s infinite alternate;
+        }
+        @keyframes pulse {
+            0% { opacity: 0.4; transform: scale(0.9); }
+            100% { opacity: 1; transform: scale(1.2); }
+        }
+        .status-text { transition: color 0.3s; }
+
+        .btn-group { display: flex; flex-direction: column; gap: 16px; }
+        .btn-row { display: flex; gap: 14px; }
+        .btn-row .btn { flex: 1; }
+        .btn {
+            display: flex; align-items: center; justify-content: center; gap: 10px;
+            padding: 16px 12px; border: none; border-radius: var(--radius-sm);
+            font-size: 18px; font-weight: 600; color: #fff; cursor: pointer;
+            transition: all 0.15s ease;
+            background: rgba(255,255,255,0.05); backdrop-filter: blur(4px);
+            border: 1px solid rgba(255,255,255,0.06);
+            box-shadow: 0 4px 14px rgba(0,0,0,0.25);
+            min-height: 70px; position: relative; overflow: hidden; text-align: center;
+        }
+        .btn svg { width: 26px; height: 26px; fill: currentColor; flex-shrink: 0; }
+        .btn:active { transform: scale(0.94); filter: brightness(0.92); }
+        /* 主按钮（翻页）：与 8 个菜单同系的高级低饱和雾灰蓝玻璃态，比菜单略实以作主操作 */
+        .btn-primary {
+            background: linear-gradient(180deg, rgba(154,169,196,0.30), rgba(154,169,196,0.16));
+            border-color: rgba(176,191,218,0.48);
+            color: #f0f3fa; box-shadow: 0 6px 18px rgba(0,0,0,0.22);
+        }
+        body.light .btn-primary {
+            background: linear-gradient(180deg, #eef1f8, #e2e7f1);
+            border-color: rgba(88,106,133,0.34);
+            color: #2e3a4e; box-shadow: 0 6px 18px rgba(30,45,90,0.10);
+        }
+        .btn-success { background: var(--btn-success-bg); border-color: var(--btn-success-border); color: #fff; }
+        .btn-danger { background: var(--btn-danger-bg); border-color: var(--btn-danger-border); color: #fff; }
+        .btn-warning { background: var(--btn-warning-bg); border-color: var(--btn-warning-border); color: #fff; }
+        .btn-indigo { background: var(--btn-indigo-bg); border-color: var(--btn-indigo-border); color: #fff; }
+        body.light .btn-success { color: var(--btn-success-text); }
+        body.light .btn-danger { color: var(--btn-danger-text); }
+        body.light .btn-warning { color: var(--btn-warning-text); }
+        body.light .btn-indigo { color: var(--btn-indigo-text); }
+        body.light .btn { box-shadow: 0 3px 10px rgba(30, 45, 90, 0.08); }
+        .btn-outline { background: var(--outline-bg); border-color: var(--outline-border); color: var(--outline-text); }
+        /* 面板内的"增加"按钮：与菜单/翻页同系雾灰蓝，柔和不刺眼 */
+        .btn-up {
+            background: linear-gradient(180deg, rgba(154,169,196,0.26), rgba(154,169,196,0.14));
+            border-color: rgba(176,191,218,0.44); color: #eef1f8;
+        }
+        body.light .btn-up {
+            background: linear-gradient(180deg, #eef1f8, #e2e7f1);
+            border-color: rgba(88,106,133,0.30); color: #2e3a4e;
+        }
+        /* 8 个功能菜单：与翻页同系的高级雾灰蓝玻璃态，低饱和不刺眼 */
+        .btn-soft {
+            background: linear-gradient(180deg, rgba(154,169,196,0.12), rgba(154,169,196,0.05));
+            border-color: rgba(154,169,196,0.26);
+            color: #ccd4e0;
+        }
+        body.light .btn-soft {
+            background: linear-gradient(180deg, #f6f8fc, #eef1f7);
+            border-color: rgba(88,106,133,0.18);
+            color: #46536a;
+        }
+        .btn[data-toggle-light].open.btn-soft { outline-color: #5b7296; }
+        .btn-sleep { min-height: 60px; font-size: 18px; }
+        /* 翻页大按钮：撑满所有剩余空间 */
+        .btn-page { min-height: 0; font-size: 34px; letter-spacing: 2px; flex-direction: column; gap: 20px; }
+        .btn-page svg { width: 82px; height: 82px; }
+        /* 功能小按钮：图标在上、文字在下，统一正方形高度 */
+        .btn-mini { min-height: 72px; padding: 8px 4px; gap: 7px; flex-direction: column; font-size: 13.5px; font-weight: 600; }
+        .btn-mini svg { width: 24px; height: 24px; }
+        .btn-mini .mini-ic { font-size: 24px; line-height: 1; display: inline-block; }
+        /* 功能区 4×2 网格 + 下方翻页两列 */
+        .func-grid-wrap { display: flex; flex-direction: column; gap: 14px; flex: 1; min-height: 0; }
+        .func-grid { position: relative; display: grid; grid-template-columns: repeat(4, 1fr); grid-auto-rows: 1fr; gap: 10px; }
+        .func-grid .btn { min-height: 0; height: 100%; }
+        .page-row { display: flex; gap: 14px; flex: 1; min-height: 0; }
+        .page-row .btn { flex: 1; }
+        .btn-sm { min-height: 58px; font-size: 14px; padding: 10px 6px; gap: 6px; }
+        .btn-sm svg { width: 20px; height: 20px; }
+        .btn-flash { animation: flash 0.3s ease; }
+        @keyframes flash {
+            0% { box-shadow: 0 0 0 0 rgba(255,255,255,0.4); }
+            50% { box-shadow: 0 0 24px 8px rgba(255,255,255,0.2); }
+            100% { box-shadow: 0 0 0 0 transparent; }
+        }
+        .section-label { font-size: 15px; font-weight: 500; color: var(--text-secondary); text-align: center; letter-spacing: 0.5px; margin-top: 4px; }
+
+        /* 二级菜单（前光亮度/色温） */
+        .light-toggle-row { display: flex; gap: 14px; }
+        .light-toggle {
+            flex: 1; min-height: 64px; display: flex; align-items: center; justify-content: center;
+            gap: 8px; font-size: 17px; font-weight: 600; color: #fff; cursor: pointer;
+            border-radius: var(--radius-sm); border: 1px solid rgba(255,255,255,0.06);
+            transition: all 0.15s ease;
+        }
+        .light-toggle:active { transform: scale(0.97); }
+        body.light .light-toggle.btn-warning { color: var(--btn-warning-text); }
+        body.light .light-toggle.btn-indigo { color: var(--btn-indigo-text); }
+        .light-toggle .chev { margin-left: auto; font-size: 12px; color: var(--text-muted); transition: transform 0.2s ease; }
+        .light-toggle.open .chev { transform: rotate(180deg); }
+        .btn[data-toggle-light].open { outline: 2px solid rgba(61,139,255,0.8); outline-offset: -2px; }
+        .btn[data-toggle-light].open svg, .btn[data-toggle-light].open span:not(.chev) { filter: brightness(1.25); }
+        .light-panel { display: none; position: absolute; left: 0; right: 0; top: calc(100% + 6px); z-index: 20; grid-template-columns: 1fr 1fr; gap: 10px; padding: 10px 12px; border: 1px solid var(--panel-border); border-radius: var(--radius-sm); background: var(--panel-bg); box-shadow: var(--shadow); backdrop-filter: blur(8px); }
+        body.light .light-panel { background: rgba(255, 255, 255, 0.97); border-color: rgba(31,45,90,0.14); }
+        .light-panel.open { display: grid; }
+        .light-panel .btn-panel { min-height: 46px; font-size: 13px; }
+        .btn-group { gap: 20px; }
+        @media (max-width: 400px) {
+            .container { padding: 16px 14px 24px; }
+            .btn { font-size: 16px; min-height: 60px; }
+            .btn-page, .btn-mini { min-height: 0; }
+            .btn-sm { min-height: 52px; font-size: 13px; }
+            .settings { flex-wrap: wrap; }
+            .settings .port-input { max-width: 60px; }
+            /* 窄屏：标题略收、防溢出换行 */
+            .header { grid-template-columns: 30px 1fr 30px; gap: 4px; }
+            .header h1 { font-size: 24px; gap: 4px; letter-spacing: 0.2px; }
+            .theme-toggle { width: 30px; height: 30px; font-size: 15px; }
+        }
+        @media (min-width: 600px) { .container { padding: 36px 30px; } }
+
+        /* 音量键模式开关：翻页 / 调音量 */
+        .settings-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 2px 2px; }
+        .settings-label { font-size: 15px; color: var(--text-secondary); }
+        .seg-toggle { display: inline-flex; background: var(--panel-bg); border: 1px solid var(--panel-border); border-radius: 999px; padding: 3px; }
+        .seg-toggle button { border: 0; background: transparent; color: var(--text-secondary); font-size: 14px; font-weight: 600; padding: 7px 16px; border-radius: 999px; cursor: pointer; transition: all .15s ease; }
+        .seg-toggle button.active { background: #3d8bff; color: #fff; box-shadow: 0 2px 8px rgba(61,139,255,.35); }
+        body.light .seg-toggle { background: rgba(255,255,255,.85); border-color: rgba(31,45,90,.14); }
+        body.light .seg-toggle button.active { color: #fff; }
+        .vol-hint { font-size: 12px; color: var(--text-muted); padding: 2px 2px 0; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <button class="keys-toggle" id="keysToggle" title="键盘 / 翻页笔按键映射">⌨️</button>
+        <div class="header-title">
+            <h1>KOReader 遥控</h1>
+            <div class="sub">Wi‑Fi 无线控制</div>
+        </div>
+        <button class="theme-toggle" id="themeToggle" title="切换日间/夜间">☀️</button>
+    </div>
+
+    <!-- 连接设置 -->
+    <div class="settings">
+        <label>🔗</label>
+        <input type="text" class="ip-input" id="ipInput" placeholder="设备 IP" value="192.168.0.100">
+        <span style="color: var(--text-muted);">:</span>
+        <input type="text" class="port-input" id="portInput" placeholder="端口（可选）" value="8080">
+        <button class="save-btn" id="saveSettings">连接</button>
+    </div>
+
+    <!-- 音量键模式 -->
+    <div class="settings-row">
+        <span class="settings-label">🔊 音量键</span>
+        <div class="seg-toggle" id="volMode">
+            <button data-mode="page" type="button">翻页</button>
+            <button data-mode="volume" type="button">调音量</button>
+        </div>
+    </div>
+    <div class="vol-hint" id="volHint">当前：音量键用于翻页（上=上一页 / 下=下一页）</div>
+
+    <!-- 状态栏 -->
+    <div class="status-bar">
+        <span class="dot" id="statusDot"></span>
+        <span class="status-text" id="statusText">就绪</span>
+    </div>
+
+    <!-- 功能按钮：上方两排 4×2 = 8 个小方块 + 前光二级 + 翻页大按钮 -->
+    <div class="btn-group func-grid-wrap">
+        <div class="func-grid">
+            <button class="btn btn-mini btn-soft" data-event="ShowToc">
+                <svg viewBox="0 0 24 24"><path d="M3 5h18v2H3V5zm0 6h18v2H3v-2zm0 6h12v2H3v-2z"/></svg>目录
+            </button>
+            <button class="btn btn-mini btn-soft" id="screenshotBtn">
+                <svg viewBox="0 0 24 24"><path d="M9 2l-1.83 2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2h-3.17L15 2H9zm3 15c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5z"/></svg>截图
+            </button>
+            <button class="btn btn-mini btn-soft" data-event="FullRefresh">
+                <svg viewBox="0 0 24 24"><path d="M17.65 6.35A7.95 7.95 0 0 0 12 4a8 8 0 1 0 7.73 10h-2.08A6 6 0 1 1 15 6.92L12 9.85V4h5.35l.3.35zM17.65 6.35L20.9 3.1"/></svg>全刷
+            </button>
+            <button class="btn btn-mini btn-soft" data-event="RequestSuspend">
+                <svg viewBox="0 0 24 24"><path d="M12 3a9 9 0 1 0 9 9c0-.46-.04-.92-.1-1.36a5.389 5.389 0 0 1-4.4 2.26 5.403 5.403 0 0 1-3.14-9.8c-.44-.06-.9-.1-1.36-.1z"/></svg>休眠
+            </button>
+            <button class="btn btn-mini btn-soft" data-event="ToggleNightMode">
+                <svg viewBox="0 0 24 24"><path d="M9 2l-1.83 2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2h-3.17L15 2H9zm-4 6a7.5 7.5 0 0 1 7 7.75 7.5 7.5 0 0 1-7 7.25c-.7 0-1.4-.1-2-.28V8.28c.6-.18 1.3-.28 2-.28z"/></svg>夜间
+            </button>
+            <button class="btn btn-mini btn-soft" data-toggle-light="brightnessPanel"><span class="mini-ic">💡</span><span>亮度</span></button>
+            <button class="btn btn-mini btn-soft" data-toggle-light="warmthPanel"><span class="mini-ic">🌡️</span><span>色温</span></button>
+            <button class="btn btn-mini btn-soft" data-event="IterateRotation">
+                <svg viewBox="0 0 24 24"><path d="M16.48 2.52a10 10 0 0 1 0 14.07l-1.41-1.41a8 8 0 0 0 0-11.26l1.41-1.4M7.52 21.48a10 10 0 0 1 0-14.07l1.41 1.41a8 8 0 0 0 0 11.26l-1.41 1.4M6.34 6.34l1.41 1.41A8 8 0 0 0 7.75 18.75l-1.41 1.41A10 10 0 0 1 6.34 6.34M17.66 17.66l-1.41-1.41A8 8 0 0 0 16.25 5.25l1.41-1.41A10 10 0 0 1 17.66 17.66"/></svg>旋转
+            </button>
+
+            <!-- 二级面板：弹出覆盖在下方（脱离网格流、盖住翻页顶部），不挤压布局 -->
+            <div class="light-panel" id="brightnessPanel">
+                <button class="btn btn-up btn-panel" data-event="IncreaseFlIntensity/1">+1</button>
+                <button class="btn btn-outline btn-panel" data-event="DecreaseFlIntensity/1">−1</button>
+            </div>
+            <div class="light-panel" id="warmthPanel">
+                <button class="btn btn-up btn-panel" data-event="IncreaseFlWarmth/1">+1</button>
+                <button class="btn btn-outline btn-panel" data-event="DecreaseFlWarmth/1">−1</button>
+            </div>
+        </div>
+
+        <!-- 翻页大按钮：占满下方全部空间 -->
+        <div class="page-row">
+            <button class="btn btn-primary btn-page" data-event="GotoViewRel/-1">
+                <svg viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>上一页
+            </button>
+            <button class="btn btn-primary btn-page" data-event="GotoViewRel/1">
+                <svg viewBox="0 0 24 24"><path d="M8.59 16.59L10 18l6-6-6-6-1.41 1.41L13.17 12z"/></svg>下一页
+            </button>
+        </div>
+    </div>
+</div>
+
+    <!-- 键盘 / 蓝牙翻页笔按键映射说明 -->
+    <div class="keys-overlay" id="keysOverlay">
+        <div class="keys-card">
+            <div class="keys-head">
+                <span>⌨️ 按键映射</span>
+                <button class="keys-close" id="keysClose" title="关闭">✕</button>
+            </div>
+            <div class="keys-body" id="keysBody"></div>
+        </div>
+    </div>
+
+    <script>
+    (function() {
+        // ---- 日间/夜间主题 ----
+        const themeToggle = document.getElementById('themeToggle');
+        const themeColorMeta = document.querySelector('meta[name="theme-color"]');
+        function applyTheme(light) {
+            document.body.classList.toggle('light', light);
+            themeToggle.textContent = light ? '🌙' : '☀️';
+            themeToggle.title = light ? '切换到夜间模式' : '切换到日间模式';
+            if (themeColorMeta) themeColorMeta.content = light ? '#f2f5fb' : '#14141d';
+            localStorage.setItem('koreader_remote_theme', light ? 'light' : 'dark');
+        }
+        themeToggle.addEventListener('click', () => {
+            applyTheme(!document.body.classList.contains('light'));
+        });
+        applyTheme(localStorage.getItem('koreader_remote_theme') === 'light');
+
+        // ---- 前光二级菜单（亮度/色温互斥展开） ----
+        document.querySelectorAll('[data-toggle-light]').forEach(toggleBtn => {
+            toggleBtn.addEventListener('click', function() {
+                const target = document.getElementById(this.dataset.toggleLight);
+                const wasOpen = this.classList.contains('open');
+                // 收起所有
+                document.querySelectorAll('[data-toggle-light]').forEach(b => b.classList.remove('open'));
+                document.querySelectorAll('.light-panel').forEach(p => p.classList.remove('open'));
+                // 若原本收起则展开当前
+                if (!wasOpen) {
+                    this.classList.add('open');
+                    if (target) target.classList.add('open');
+                }
+            });
+        });
+
+        const ipInput = document.getElementById('ipInput');
+        const portInput = document.getElementById('portInput');
+        const saveBtn = document.getElementById('saveSettings');
+        const statusDot = document.getElementById('statusDot');
+        const statusText = document.getElementById('statusText');
+        const actionBtns = document.querySelectorAll('[data-event]');
+
+        // ---- 配置读写 ----
+        function loadConfig() {
+            try {
+                const saved = localStorage.getItem('koreader_remote_config');
+                if (saved) {
+                    const config = JSON.parse(saved);
+                    if (config.ip) ipInput.value = config.ip;
+                    if (config.port !== undefined) portInput.value = config.port;
+                }
+            } catch (_) {}
+        }
+        function saveConfig() {
+            const ip = ipInput.value.trim() || '';
+            const port = portInput.value.trim();
+            localStorage.setItem('koreader_remote_config', JSON.stringify({ ip, port }));
+        }
+
+        // ---- 连接测试 ----
+        // 服务器不带 CORS 头，用 no-cors 探测：能收到响应（无论状态码）即视为可达
+        function connect() {
+            const base = getBaseUrl();
+            if (!ipInput.value.trim()) {
+                updateStatus('请先输入设备 IP', '#ef4444', 'inactive');
+                return;
+            }
+            saveConfig();
+            updateStatus(`连接中 ${base} …`, '#facc15', 'sending');
+            const started = performance.now();
+            const controller = new AbortController();
+            const timer = setTimeout(() => controller.abort(), 5000);
+            fetch(base + '/', { mode: 'no-cors', cache: 'no-store', signal: controller.signal })
+                .then(() => {
+                    clearTimeout(timer);
+                    updateStatus(`连接成功 ✓ ${base.replace('http://', '')}`, '#34d399', '');
+                })
+                .catch((err) => {
+                    clearTimeout(timer);
+                    const elapsed = performance.now() - started;
+                    let msg;
+                    if (err.name === 'AbortError') {
+                        msg = '连接超时：设备无响应，请确认手机与设备在同一 Wi-Fi，IP 是否正确';
+                    } else if (elapsed < 1500) {
+                        msg = '连接被拒绝：端口未开放，请检查 KOReader 的 HTTP 服务是否已启动、端口是否正确';
+                    } else {
+                        msg = `连接失败：${err.message || '网络错误'}`;
+                    }
+                    updateStatus(msg, '#ef4444', 'inactive');
+                });
+        }
+
+        // ---- 获取基础 URL ----
+        function getBaseUrl() {
+            let ip = ipInput.value.trim() || '';
+            let port = portInput.value.trim();
+            ip = ip.replace(/^https?:\/\//, '');
+            if (port) {
+                return `http://${ip}:${port}`;
+            } else {
+                return `http://${ip}`;
+            }
+        }
+
+        // ---- 状态更新 ----
+        function updateStatus(text, color = '#94a3b8', dotState = 'inactive') {
+            statusText.textContent = text;
+            statusText.style.color = color;
+            statusDot.className = 'dot';
+            if (dotState) statusDot.classList.add(dotState);
+        }
+
+        // ---- 指令表 / 按键映射表 ----
+        /* ==KEYMAP-BEGIN== 供 tests/test_keymap.js 抽取校验，勿改标记 */
+        var ACTIONS = {
+            // 翻页
+            prev:     { path: 'GotoViewRel/-1',        label: '上一页' },
+            next:     { path: 'GotoViewRel/1',         label: '下一页' },
+            prev10:   { path: 'GotoViewRel/-10',       label: '上 10 页' },
+            next10:   { path: 'GotoViewRel/10',        label: '下 10 页' },
+            prevch:   { path: 'GotoPrevChapter',       label: '上一章' },
+            nextch:   { path: 'GotoNextChapter',       label: '下一章' },
+            first:    { path: 'GoToBeginning',         label: '第一页' },
+            last:     { path: 'GoToEnd',               label: '最后一页' },
+            random:   { path: 'GoToRandomPage',        label: '随机页' },
+            goto:     { path: 'ShowGotoDialog',        label: '跳页' },
+            // 阅读
+            toc:      { path: 'ShowToc',               label: '目录' },
+            bookmark: { path: 'ToggleBookmark',        label: '加/去书签' },
+            fontup:   { path: 'IncreaseFontSize/2',    label: '字号 +' },
+            fontdn:   { path: 'DecreaseFontSize/2',    label: '字号 −' },
+            menu:     { path: 'ShowConfigMenu',        label: '底部菜单' },
+            footer:   { path: 'ToggleFooterMode',      label: '状态栏' },
+            back:     { path: 'Back',                  label: '返回' },
+            home:     { path: 'Home',                  label: '文件浏览器' },
+            // 屏幕与前光
+            rot:      { path: 'IterateRotation',       label: '旋转 90°' },
+            rotccw:   { path: 'IterateRotation/true',  label: '反向旋转 90°' },
+            night:    { path: 'ToggleNightMode',       label: '夜间模式' },
+            refresh:  { path: 'FullRefresh',           label: '全屏刷新' },
+            flonoff:  { path: 'ToggleFrontlight',      label: '前光开关' },
+            flup:     { path: 'IncreaseFlIntensity/1', label: '亮度 +1' },
+            fldn:     { path: 'DecreaseFlIntensity/1', label: '亮度 −1' },
+            wmup:     { path: 'IncreaseFlWarmth/1',    label: '色温 +1' },
+            wmdn:     { path: 'DecreaseFlWarmth/1',    label: '色温 −1' },
+            fullscr:  { path: 'ToggleFullscreen',      label: '全屏切换' },
+            // 设备
+            wifi:     { path: 'ToggleWifi',            label: 'Wi-Fi 开关' },
+            suspend:  { path: 'RequestSuspend',        label: '休眠' },
+            // 本机动作（不发事件）
+            screenshot: { path: null, special: 'screenshot', label: '截图存到手机' }
+        };
+
+        // 键 -> 动作。查找顺序：先试带修饰键的组合，再试裸键
+        var KEYMAP = {
+            // 蓝牙翻页笔最常见的键（多数 PPT 翻页笔发 PageUp/PageDown 或方向键）
+            'PageUp': 'prev', 'PageDown': 'next',
+            'ArrowLeft': 'prev', 'ArrowRight': 'next',
+            'ArrowUp': 'prev', 'ArrowDown': 'next',
+            'Space': 'next', 'Enter': 'next', 'Backspace': 'prev',
+            'MediaTrackPrevious': 'prev', 'MediaTrackNext': 'next',
+            'BrowserBack': 'prev', 'BrowserForward': 'next',
+            // 只发 keyCode 的老式翻页笔兜底
+            '#33': 'prev', '#34': 'next',
+            '#37': 'prev', '#38': 'prev', '#39': 'next', '#40': 'next',
+            '#8': 'prev', '#13': 'next', '#32': 'next',
+            '#166': 'prev', '#167': 'next', '#176': 'next', '#177': 'prev',
+            // 大跨度翻页 / 章节跳转
+            'Shift+PageUp': 'prev10', 'Shift+PageDown': 'next10',
+            'Ctrl+PageUp': 'prevch', 'Ctrl+PageDown': 'nextch',
+            'Shift+ArrowLeft': 'prevch', 'Shift+ArrowRight': 'nextch',
+            'Ctrl+ArrowLeft': 'prev10', 'Ctrl+ArrowRight': 'next10',
+            'Shift+Home': 'first', 'Shift+End': 'last',
+            'Ctrl+Home': 'first', 'Ctrl+End': 'last',
+            // 单个字母键（物理键盘 / 带字母键的遥控器）
+            't': 'toc', 'T': 'toc',
+            'b': 'bookmark', 'B': 'bookmark',
+            'r': 'rot', 'R': 'rotccw',
+            'n': 'night', 'N': 'night',
+            'f': 'refresh', 'F': 'refresh', 'F5': 'refresh',
+            'l': 'flonoff', 'L': 'flonoff',
+            's': 'screenshot', 'S': 'screenshot',
+            'z': 'suspend', 'Z': 'suspend',
+            'g': 'goto', 'G': 'goto',
+            'p': 'random', 'P': 'random',
+            'm': 'menu', 'M': 'menu',
+            'u': 'footer', 'U': 'footer',
+            'h': 'home', 'H': 'home',
+            'w': 'wifi', 'W': 'wifi',
+            'Escape': 'back',
+            // 亮度 / 色温
+            '+': 'flup', '=': 'flup', ']': 'flup', 'Add': 'flup',
+            'VolumeUp': 'flup', 'AudioVolumeUp': 'flup',
+            '-': 'fldn', '_': 'fldn', '[': 'fldn', 'Subtract': 'fldn',
+            'VolumeDown': 'fldn', 'AudioVolumeDown': 'fldn',
+            '>': 'wmup', 'Shift+.': 'wmup', 'Shift+ArrowUp': 'wmup',
+            '<': 'wmdn', 'Shift+,': 'wmdn', 'Shift+ArrowDown': 'wmdn',
+            // 全屏 / 字号
+            'F11': 'fullscr', 'Shift+F': 'fullscr',
+            'Alt+ArrowUp': 'fontup', 'Alt+ArrowDown': 'fontdn'
+        };
+
+        // 说明面板的分组与顺序（只为展示用，内容由 KEYMAP 反查生成，不会和实际映射脱节）
+        var KEY_HELP_GROUPS = [
+            ['翻页（翻页笔默认键）', ['prev', 'next']],
+            ['快速跳转', ['prev10', 'next10', 'prevch', 'nextch', 'first', 'last', 'random', 'goto']],
+            ['阅读', ['toc', 'bookmark', 'menu', 'footer', 'back', 'home', 'fontup', 'fontdn']],
+            ['屏幕与前光', ['night', 'refresh', 'rot', 'rotccw', 'flup', 'fldn', 'wmup', 'wmdn', 'flonoff', 'fullscr']],
+            ['设备', ['suspend', 'wifi']],
+            ['本机', ['screenshot']]
+        ];
+
+        var KEY_LABEL = {
+            'Space': '空格', 'Enter': '回车', 'Backspace': '退格', 'Escape': 'Esc',
+            'ArrowLeft': '←', 'ArrowRight': '→', 'ArrowUp': '↑', 'ArrowDown': '↓',
+            'PageUp': 'PgUp', 'PageDown': 'PgDn',
+            'MediaTrackPrevious': '媒体上一曲', 'MediaTrackNext': '媒体下一曲',
+            'BrowserBack': '浏览器后退', 'BrowserForward': '浏览器前进',
+            'VolumeUp': '音量+', 'AudioVolumeUp': '音量+',
+            'VolumeDown': '音量−', 'AudioVolumeDown': '音量−',
+            'Add': '小键盘+', 'Subtract': '小键盘−'
+        };
+        function keyLabel(k) {
+            if (k.charAt(0) === '#') return 'keyCode ' + k.slice(1);
+            if (KEY_LABEL[k]) return KEY_LABEL[k];
+            if (k.indexOf('Shift+') === 0) return 'Shift+' + keyLabel(k.slice(6));
+            if (k.indexOf('Ctrl+') === 0) return 'Ctrl+' + keyLabel(k.slice(5));
+            if (k.indexOf('Alt+') === 0) return 'Alt+' + keyLabel(k.slice(4));
+            return k;
+        }
+        function keysForAction(id) {
+            var out = [];
+            for (var k in KEYMAP) { if (KEYMAP[k] === id) out.push(k); }
+            return out;
+        }
+        // 把一个按键事件解析成动作 id：先试带修饰键的组合，再试裸键（含 keyCode 兜底）
+        function resolveKey(e) {
+            var ids = [];
+            function add(x) { if (x && ids.indexOf(x) < 0) ids.push(x); }
+            add(e.key);
+            if (e.key === ' ' || e.key === 'Spacebar') add('Space');
+            if (e.key === 'Esc') add('Escape');
+            add(e.code);
+            if (e.keyCode) add('#' + e.keyCode);
+            var shift = !!e.shiftKey, ctrl = !!(e.ctrlKey || e.metaKey), alt = !!e.altKey;
+            var pre = '';
+            if (ctrl && !alt) pre += 'Ctrl+';
+            if (shift && !ctrl && !alt) pre += 'Shift+';
+            if (alt) pre += 'Alt+';
+            var i, v;
+            if (pre) {
+                for (i = 0; i < ids.length; i++) { v = KEYMAP[pre + ids[i]]; if (v) return v; }
+            }
+            for (i = 0; i < ids.length; i++) { v = KEYMAP[ids[i]]; if (v) return v; }
+            return null;
+        }
+        /* ==KEYMAP-END== */
+
+        // ---- 发送遥控指令 ----
+        function eventLabel(eventPath) {
+            for (var k in ACTIONS) {
+                var p = ACTIONS[k].path;
+                if (p && (eventPath === p || eventPath.indexOf(p + '/') === 0)) return ACTIONS[k].label;
+            }
+            return eventPath;
+        }
+        function sendCommand(eventPath) {
+            const base = getBaseUrl();
+            const url = base + '/koreader/event/' + eventPath;
+            updateStatus('发送中…', '#facc15', 'sending');
+            fetch(url, { mode: 'no-cors', cache: 'no-store' }).catch(() => {});
+            setTimeout(() => {
+                updateStatus('指令已发送 ✓ ' + eventLabel(eventPath), '#34d399', '');
+                setTimeout(() => updateStatus('就绪', '#94a3b8', 'inactive'), 1200);
+            }, 200);
+        }
+        function runAction(id) {
+            var a = ACTIONS[id];
+            if (!a) return;
+            if (a.special === 'screenshot') { takeScreenshot(); return; }
+            flashForAction(id);
+            sendCommand(a.path);
+        }
+        // 按键触发的动作，让页面上对应的按钮也闪一下，方便确认映射
+        function flashForAction(id) {
+            var a = ACTIONS[id];
+            if (!a || !a.path) return;
+            var el = document.querySelector('[data-event="' + a.path + '"]');
+            if (!el) return;
+            el.classList.add('btn-flash');
+            setTimeout(function() { el.classList.remove('btn-flash'); }, 300);
+        }
+
+        // ---- 屏幕截图（保存到本地） ----
+        // /koreader/device/screen/bb 直接返回当前屏幕 PNG，不往设备截图目录写文件
+        const screenshotBtn = document.getElementById('screenshotBtn');
+        function screenshotTimestamp() {
+            const d = new Date();
+            const p = n => String(n).padStart(2, '0');
+            return String(d.getFullYear()) + p(d.getMonth() + 1) + p(d.getDate()) + '_'
+                + p(d.getHours()) + p(d.getMinutes()) + p(d.getSeconds());
+        }
+        // 原生 App 通道：让 Android 壳把截图直接写进手机下载目录
+        let __krShotTimer = null;
+        window.__krShot = function (ok) {
+            clearTimeout(__krShotTimer);
+            if (ok) {
+                updateStatus('截图已保存到手机下载目录 ✓', '#34d399', '');
+            } else {
+                updateStatus('截图失败，请确认设备已连接', '#ef4444', 'inactive');
+            }
+            setTimeout(() => updateStatus('就绪', '#94a3b8', 'inactive'), 1800);
+        };
+        function krSaveScreenshot() {
+            const base = getBaseUrl();
+            if (typeof KR !== 'undefined' && KR && typeof KR.saveScreenshot === 'function') {
+                updateStatus('正在保存截图到手机…', '#facc15', 'sending');
+                // 原生回调会在成功/失败时调用 window.__krShot(true/false)
+                KR.saveScreenshot(base);
+                return true;
+            }
+            return false;
+        }
+        function takeScreenshot() {
+            const url = getBaseUrl() + '/koreader/device/screen/bb';
+            updateStatus('正在获取屏幕截图…', '#facc15', 'sending');
+            // 1) 优先走原生桥：点击即直接下载到手机，无需任何授权弹窗
+            if (krSaveScreenshot()) return;
+            // 2) 浏览器兜底：本地 file:// 受跨域限制时改成新标签打开，手动保存
+            fetch(url, { cache: 'no-store' }).then(res => {
+                if (!res.ok) throw new Error('HTTP ' + res.status);
+                return res.blob();
+            }).then(blob => {
+                const a = document.createElement('a');
+                const blobUrl = URL.createObjectURL(blob);
+                a.href = blobUrl;
+                a.download = 'koreader_' + screenshotTimestamp() + '.png';
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+                setTimeout(() => URL.revokeObjectURL(blobUrl), 5000);
+                updateStatus('截图已保存到本地 ✓', '#34d399', '');
+                setTimeout(() => updateStatus('就绪', '#94a3b8', 'inactive'), 1500);
+            }).catch(() => {
+                updateStatus('已打开截图，请手动保存到本地', '#60a5fa', 'sending');
+                window.open(url, '_blank');
+                setTimeout(() => updateStatus('就绪', '#94a3b8', 'inactive'), 3000);
+            });
+        }
+        screenshotBtn.addEventListener('click', function() {
+            this.classList.add('btn-flash');
+            const self = this;
+            setTimeout(() => self.classList.remove('btn-flash'), 300);
+            takeScreenshot();
+        });
+
+        // ---- 蓝牙翻页笔 / 键盘：全量按键映射 ----
+        document.addEventListener('keydown', (e) => {
+            const t = e.target;
+            if (t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.isContentEditable)) return;
+            // 说明面板打开时，只接管 Esc 关闭
+            if (keysOverlay.classList.contains('open')) {
+                if (e.key === 'Escape' || e.key === 'Esc') { e.preventDefault(); closeKeysHelp(); }
+                return;
+            }
+            const id = resolveKey(e);
+            if (!id) return;
+            // Tab 到按钮后按 回车/空格 仍然走原生激活，不抢
+            const ae = document.activeElement;
+            if (ae && ae.tagName === 'BUTTON' && (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar')) return;
+            e.preventDefault();
+            runAction(id);
+        });
+        // 点完按钮就取消焦点，避免随后的 空格/回车 又触发那个按钮
+        document.addEventListener('click', (e) => {
+            const b = e.target && e.target.closest ? e.target.closest('button') : null;
+            if (b) setTimeout(() => b.blur(), 0);
+        });
+
+        // ---- 按键映射说明面板 ----
+        const keysOverlay = document.getElementById('keysOverlay');
+        const keysBody = document.getElementById('keysBody');
+        const keysToggle = document.getElementById('keysToggle');
+        const keysClose = document.getElementById('keysClose');
+        function escapeHtml(str) {
+            return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        }
+        function renderKeysHelp() {
+            let html = '';
+            for (const group of KEY_HELP_GROUPS) {
+                const title = group[0], ids = group[1];
+                let lines = '';
+                for (const id of ids) {
+                    const a = ACTIONS[id];
+                    if (!a) continue;
+                    const ks = keysForAction(id);
+                    if (!ks.length) continue;
+                    let codes = '';
+                    for (const k of ks) codes += '<kbd>' + escapeHtml(keyLabel(k)) + '</kbd>';
+                    lines += '<div class="keys-line"><span class="keys-codes">' + codes
+                        + '</span><span class="keys-act">' + escapeHtml(a.label) + '</span></div>';
+                }
+                if (lines) html += '<div class="keys-group"><h3>' + escapeHtml(title) + '</h3>' + lines + '</div>';
+            }
+            html += '<div class="keys-note">'
+                + '① 蓝牙翻页笔大多只发 PgUp/PgDn 或方向键 → 直接翻页。<br>'
+                + '② 组合键：Shift+PgUp/PgDn 跳 10 页；Shift+←/→ 上/下一章；Shift+↑/↓ 调色温；Shift+Home/End 首/尾页；Alt+↑/↓ 调字号。<br>'
+                + '③ 快捷键只在焦点不在输入框时生效；部分旧遥控器只发 keyCode，已做兼容。<br>'
+                + '④ 亮度 / 色温按钮可长按连发。<br>'
+                + '⑤ 字母键是为了带字母键的遥控器/物理键盘，用不到可以忽略。'
+                + '</div>';
+            keysBody.innerHTML = html;
+        }
+        function openKeysHelp() { renderKeysHelp(); keysOverlay.classList.add('open'); }
+        function closeKeysHelp() { keysOverlay.classList.remove('open'); }
+        keysToggle.addEventListener('click', openKeysHelp);
+        keysClose.addEventListener('click', closeKeysHelp);
+        keysOverlay.addEventListener('click', (e) => { if (e.target === keysOverlay) closeKeysHelp(); });
+
+        // ---- 绑定屏幕按钮 ----
+        actionBtns.forEach(btn => {
+            btn.addEventListener('click', function() {
+                const event = this.dataset.event;
+                if (!event) return;
+                this.classList.add('btn-flash');
+                setTimeout(() => this.classList.remove('btn-flash'), 300);
+                sendCommand(event);
+            });
+        });
+
+        // ---- 亮度/色温按钮长按连发 ----
+        const holdBtns = document.querySelectorAll('[data-event^="IncreaseFl"], [data-event^="DecreaseFl"]');
+        holdBtns.forEach(btn => {
+            let holdTimer = null, repeatTimer = null, held = false;
+            function stop() {
+                clearTimeout(holdTimer); clearInterval(repeatTimer);
+                holdTimer = null; repeatTimer = null; held = false;
+            }
+            btn.addEventListener('pointerdown', () => {
+                held = true;
+                holdTimer = setTimeout(() => {
+                    if (!held) return;
+                    repeatTimer = setInterval(() => sendCommand(btn.dataset.event), 200);
+                }, 500);
+            });
+            ['pointerup', 'pointerleave', 'pointercancel'].forEach(ev =>
+                btn.addEventListener(ev, stop));
+            btn.addEventListener('contextmenu', e => e.preventDefault());
+        });
+
+        saveBtn.addEventListener('click', connect);
+        [ipInput, portInput].forEach(inp => {
+            inp.addEventListener('keydown', (e) => { if (e.key === 'Enter') connect(); });
+        });
+
+        loadConfig();
+        updateStatus('就绪', '#94a3b8', 'inactive');
+
+        // ---- 音量键模式开关：翻页 / 调音量 ----
+        const volModeEl = document.getElementById('volMode');
+        const volHintEl = document.getElementById('volHint');
+        let volPageMode = (localStorage.getItem('koreader_remote_vol_page') !== '0'); // 默认翻页
+        function renderVolMode() {
+            volModeEl.querySelectorAll('button').forEach(b => {
+                b.classList.toggle('active', b.dataset.mode === (volPageMode ? 'page' : 'volume'));
+            });
+            volHintEl.textContent = volPageMode
+                ? '当前：音量键用于翻页（上=上一页 / 下=下一页）'
+                : '当前：音量键用于调节系统音量';
+        }
+        function setVolPageMode(on) {
+            volPageMode = on;
+            localStorage.setItem('koreader_remote_vol_page', on ? '1' : '0');
+            renderVolMode();
+            // 通知原生 App
+            if (typeof KR !== 'undefined' && KR && typeof KR.setVolumePageMode === 'function') {
+                KR.setVolumePageMode(on);
+            }
+        }
+        volModeEl.querySelectorAll('button').forEach(b => {
+            b.addEventListener('click', () => setVolPageMode(b.dataset.mode === 'page'));
+        });
+        renderVolMode();
+        // 页面加载后把当前模式同步给原生层
+        if (typeof KR !== 'undefined' && KR && typeof KR.setVolumePageMode === 'function') {
+            KR.setVolumePageMode(volPageMode);
+        }
+
+        // 暴露给原生 App（音量键翻页 / 截图）：evaluateJavascript 在全局作用域运行，
+        // 必须显式挂到 window 上，否则 IIFE 内的局部函数访问不到。
+        window.runAction = runAction;
+        window.takeScreenshot = takeScreenshot;
+        window.getConnectionInfo = function () { return { base: getBaseUrl() }; };
+    })();
+</script>
+</body>
+</html>
